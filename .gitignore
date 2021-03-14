@@ -1,0 +1,8 @@
+# Arquivos objeto
+*.o
+
+# Arquivo executável
+concordo
+
+# Pasta de configurações do vscode
+.vscode/*
