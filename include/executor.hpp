@@ -4,7 +4,7 @@
 #include <ostream>
 #include <sstream>
 
-#include "sistema.h"
+#include "sistema.hpp"
 
 class Executor{
     private:

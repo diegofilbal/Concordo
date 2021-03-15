@@ -3,11 +3,11 @@
 #include <algorithm>
 #include <vector>
 
-#include "../include/sistema.h"
+#include "../include/sistema.hpp"
 
 /* COMANDOS */
 std::string Sistema::quit() {
-    return "Saindo...";
+    return "Saindo do Concordo...";
 }
 
 std::string Sistema::create_user(const std::string email, const std::string senha, const std::string nome){

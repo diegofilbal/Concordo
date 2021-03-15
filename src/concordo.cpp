@@ -3,8 +3,8 @@
 #include <vector>
 #include <string>
 
-#include "../include/sistema.h"
-#include "../include/executor.h"
+#include "../include/sistema.hpp"
+#include "../include/executor.hpp"
 
 using namespace std;
 

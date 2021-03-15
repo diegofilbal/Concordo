@@ -4,7 +4,7 @@
 #include <sstream>
 #include <queue>
 
-#include "../include/executor.h"
+#include "../include/executor.hpp"
 
 // Função de apoio que recebe um istringstream e lê todo texto restante até o fim da linha
 std::string restoDe(std::istringstream &ss){
