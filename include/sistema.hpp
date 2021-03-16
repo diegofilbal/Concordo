@@ -13,6 +13,8 @@ class Sistema{
         std::string nomeCanalConectado;
 
     public:
+    
+        Sistema();
         std::string quit();
         std::string create_user(const std::string email, const std::string senha, const std::string nome);
         std::string login(const std::string email, const std::string senha);

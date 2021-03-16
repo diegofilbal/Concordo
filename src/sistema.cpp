@@ -4,14 +4,38 @@
 #include <vector>
 
 #include "../include/sistema.hpp"
+#include "../include/usuario.hpp"
 
-/* COMANDOS */
-std::string Sistema::quit() {
+// Vector de usuários do sistema
+std::vector <Usuario> usuarios;
+
+Sistema::Sistema(){
+    usuarioLogadoId = 0;
+}
+
+std::string Sistema::quit(){
     return "Saindo do Concordo...";
 }
 
 std::string Sistema::create_user(const std::string email, const std::string senha, const std::string nome){
-    return "create_user NÃO IMPLEMENTADO";
+    
+    if(!usuarioLogadoId){ // Verifica se há algum usuário logado
+        std::cout << "Criando usuário " << nome << " (" << email << ")" << std::endl;
+
+        for(size_t i = 0; i < usuarios.size(); i++){ // Percorre o vector de usuários
+            if(usuarios[i].getEmail() == email){ // Verifica se há algum usuário com o email inserido
+                return "Usuário já existe";
+            }
+        }
+
+        // Cria o novo usuário e insere no vector
+        Usuario novo((int) (usuarios.size() + 1), email, senha, nome);
+        usuarios.push_back(novo);
+
+        return "Usuário criado";
+    }
+
+    return "Operação indisponível! \n Usuário " + usuarios[usuarioLogadoId - 1].getEmail() + " logado!";
 }
 
 std::string Sistema::login(const std::string email, const std::string senha){
