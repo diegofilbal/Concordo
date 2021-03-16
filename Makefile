@@ -18,7 +18,7 @@ bin/usuario.o: src/usuario.cpp bin/executor.o
 	g++ src/usuario.cpp -Iinclude -O0 -g -Wall -ansi -pedantic -std=c++11 -c -o bin/usuario.o
 
 # Compila o arquivo node.cpp e gera o arquivo objeto concordo.o
-bin/concordo.o: src/concordo.cpp bin/sistema.o bin/executor.o #bin/usuario.o
+bin/concordo.o: src/concordo.cpp bin/sistema.o bin/executor.o bin/usuario.o
 	g++ src/concordo.cpp -Iinclude -O0 -g -Wall -ansi -pedantic -std=c++11 -c -o bin/concordo.o
 
 # Cria o arquivo executável
