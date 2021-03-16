@@ -39,11 +39,31 @@ std::string Sistema::create_user(const std::string email, const std::string senh
 }
 
 std::string Sistema::login(const std::string email, const std::string senha){
-    return "login NÃO IMPLEMENTADO";
+
+    if(!usuarioLogadoId){ // Verifica se há algum usuário logado
+        for(size_t i = 0; i < usuarios.size(); i++){ // Percorre o vector de usuários
+            if(usuarios[i].getEmail() == email){ // Verifica se há algum usuário com o email inserido
+                if(usuarios[i].getSenha() == senha){ // Verifica se a senha inserida é correta
+                    usuarioLogadoId = usuarios[i].getId(); // Define qual usuário está logado no sistema
+                    return "Logado como " + usuarios[i].getEmail();
+                }
+            }
+        }
+
+        return "Senha ou usuário inválidos!";
+    }
+
+    return "Operação indisponível! \n Usuário " + usuarios[usuarioLogadoId - 1].getEmail() + " logado!";
 }
 
 std::string Sistema::disconnect(){
-    return "disconnect NÃO IMPLEMENTADO";
+
+    if(usuarioLogadoId != 0){ // Verifica se há algum usuário logado
+        std::cout << "Desconectando usuário " << usuarios[usuarioLogadoId - 1].getEmail();
+        usuarioLogadoId = 0; // Define a variável como 0, significando que não há usuários logados
+    }
+
+    return "Não está conectado";
 }
 
 std::string Sistema::create_server(const std::string nome){
