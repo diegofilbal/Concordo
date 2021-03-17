@@ -6,9 +6,6 @@
 #include "../include/sistema.hpp"
 #include "../include/usuario.hpp"
 
-// Vector de usuários do sistema
-std::vector <Usuario> usuarios;
-
 Sistema::Sistema(){
     usuarioLogadoId = 0;
 }

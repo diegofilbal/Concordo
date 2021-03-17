@@ -3,17 +3,19 @@
 #include <string>
 #include <iostream>
 
+#include "../include/usuario.hpp"
+#include "../include/servidor.hpp"
+
 // Sistema deve concentrar todas as operações do Concordo
 class Sistema{
     private:
-        // Precisa guardar uma coleção de servidores;
-        // Precisa guardar uma coleção de usuários;
+        std::vector <Usuario> usuarios;
+        std::vector <Servidor> servidores;
         int usuarioLogadoId; // se 0: não logado, caso contrário guarda o id do usuário logado
         std::string nomeServidorConectado;
         std::string nomeCanalConectado;
 
     public:
-    
         Sistema();
         std::string quit();
         std::string create_user(const std::string email, const std::string senha, const std::string nome);
