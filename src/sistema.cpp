@@ -5,9 +5,12 @@
 
 #include "../include/sistema.hpp"
 #include "../include/usuario.hpp"
+#include "../include/servidor.hpp"
 
 Sistema::Sistema(){
     usuarioLogadoId = 0;
+    nomeServidorConectado = "";
+    nomeCanalConectado = "";
 }
 
 std::string Sistema::quit(){
@@ -16,33 +19,33 @@ std::string Sistema::quit(){
 
 std::string Sistema::create_user(const std::string email, const std::string senha, const std::string nome){
     
-    if(!usuarioLogadoId){ // Verifica se há algum usuário logado
+    if(!usuarioLogadoId){ // Verifica se nehnum usuário está logado
         std::cout << "Criando usuário " << nome << " (" << email << ")" << std::endl;
 
         for(size_t i = 0; i < usuarios.size(); i++){ // Percorre o vector de usuários
             if(usuarios[i].getEmail() == email){ // Verifica se há algum usuário com o email inserido
-                return "Usuário já existe";
+                return "Usuário já existe!";
             }
         }
 
         // Cria o novo usuário e insere no vector
-        Usuario novo((int) (usuarios.size() + 1), email, senha, nome);
-        usuarios.push_back(novo);
+        Usuario novo_usuario((int) (usuarios.size() + 1), email, senha, nome);
+        usuarios.push_back(novo_usuario);
 
-        return "Usuário criado";
+        return "Usuário criado!";
     }
 
-    return "Operação indisponível! \n Usuário " + usuarios[usuarioLogadoId - 1].getEmail() + " logado!";
+    return "Operação indisponível!\nUsuário " + usuarios[usuarioLogadoId - 1].getEmail() + " conectado!";
 }
 
 std::string Sistema::login(const std::string email, const std::string senha){
 
-    if(!usuarioLogadoId){ // Verifica se há algum usuário logado
+    if(!usuarioLogadoId){ // Verifica se nenhum usuário está logado
         for(size_t i = 0; i < usuarios.size(); i++){ // Percorre o vector de usuários
             if(usuarios[i].getEmail() == email){ // Verifica se há algum usuário com o email inserido
                 if(usuarios[i].getSenha() == senha){ // Verifica se a senha inserida é correta
                     usuarioLogadoId = usuarios[i].getId(); // Define qual usuário está logado no sistema
-                    return "Logado como " + usuarios[i].getEmail();
+                    return "Logado como " + usuarios[i].getEmail() + "!";
                 }
             }
         }
@@ -50,21 +53,37 @@ std::string Sistema::login(const std::string email, const std::string senha){
         return "Senha ou usuário inválidos!";
     }
 
-    return "Operação indisponível! \n Usuário " + usuarios[usuarioLogadoId - 1].getEmail() + " logado!";
+    return "Operação indisponível!\nUsuário " + usuarios[usuarioLogadoId - 1].getEmail() + " conectado!";
 }
 
 std::string Sistema::disconnect(){
 
-    if(usuarioLogadoId != 0){ // Verifica se há algum usuário logado
+    if(usuarioLogadoId != 0){ // Verifica algum usuário está logado
         std::cout << "Desconectando usuário " << usuarios[usuarioLogadoId - 1].getEmail();
         usuarioLogadoId = 0; // Define a variável como 0, significando que não há usuários logados
     }
 
-    return "Não está conectado";
+    return "Não está conectado!";
 }
 
 std::string Sistema::create_server(const std::string nome){
-    return "create_server NÃO IMPLEMENTADO";
+
+    if(usuarioLogadoId != 0){ // Verifica se há algum usuário logado
+
+        for(size_t i = 0; i < servidores.size(); i++){ // Percorre o vector de servidores
+            if(servidores[i].getNome() == nome){ // Verifica se já existe um servidor com o nome inserido
+                return "Servidor com esse nome já existe!";
+            }            
+        }
+
+        // Cria novo servidor e insere no vector
+        Servidor novo_servidor(usuarioLogadoId, nome);
+        servidores.push_back(novo_servidor);
+
+        return "Servidor criado!";
+    }
+
+    return "Não está conectado!";
 }
 
 std::string Sistema::set_server_desc(const std::string nome, const std::string descricao){
