@@ -196,7 +196,28 @@ std::string Sistema::set_server_invite_code(const std::string nome, const std::s
 }
 
 std::string Sistema::list_servers(){
-    return "list_servers NÃO IMPLEMENTADO";
+
+    // Verifica se há algum usuário conectado
+    if(usuarioLogadoId){
+
+        // Variável para armezenar o retorno da função
+        std::string nome_servidores_retorno = "";
+
+        // Iterator de vector de servidores
+        std::vector<Servidor>::iterator it_servidor;
+
+        // Insere o nome dos servidores na variável de retorno
+        for(it_servidor = servidores.begin(); it_servidor != servidores.end(); it_servidor++){
+            if(it_servidor != servidores.end() - 1)
+                nome_servidores_retorno += it_servidor->getNome() + "\n";
+            else
+                nome_servidores_retorno += it_servidor->getNome();
+        }
+
+        return nome_servidores_retorno;
+    }
+
+    return "Não está conectado!";
 }
 
 std::string Sistema::remove_server(const std::string nome){
