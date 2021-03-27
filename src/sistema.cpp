@@ -57,6 +57,10 @@ std::string Sistema::login(const std::string email, const std::string senha){
 
         // Define qual usuário está logado no sistema
         usuarioLogadoId = it_usuario->getId();
+
+        // Define que o usuário não está conectado a nenhum servidor
+        nomeServidorConectado = "";
+
         return "Logado como " + it_usuario->getEmail() + "!";
     }
 
@@ -71,7 +75,10 @@ std::string Sistema::disconnect(){
         // Guarda o retorno da função em uma string
         std::string retorno = "Desconectando usuário " + usuarios[usuarioLogadoId - 1].getEmail();
 
-        // Define a variável como 0, determinando que não há usuários logados
+        // Determina que não há usuários conectados a nenhum servidor
+        nomeServidorConectado = "";
+
+        // Determina que não há usuários logados no sistema
         usuarioLogadoId = 0;
 
         return retorno;
@@ -191,6 +198,11 @@ std::string Sistema::list_servers(){
 
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
+
+        // Verifica se o vector de servidores está vazio
+        if(servidores.empty()){
+            return "Não há servidores cadastrados!";
+        }
 
         // Variável para armezenar o retorno da função
         std::string nome_servidores_retorno = "";
