@@ -119,7 +119,38 @@ std::string Sistema::create_server(const std::string nome){
 }
 
 std::string Sistema::set_server_desc(const std::string nome, const std::string descricao){
-    return "set_server_desc NÃO IMPLEMENTADO";
+
+    // Verifica se há algum usuário conectado
+    if(usuarioLogadoId){
+
+        // Iterator de vector de servidores
+        std::vector<Servidor>::iterator it_servidor;
+
+        // Procura algum servidor com o nome inserido
+        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
+            return servidor.getNome() == nome;
+        });
+
+        // Verifica se a busca do find_if retornou algum servidor válido
+        if(it_servidor != servidores.end()){
+            
+            // Verifica se o usuário que solicitou a mudança é dono do servidor
+            if(it_servidor->getUsuarioDonoID() == usuarioLogadoId){
+
+                // Altera a descrição do servidor
+                it_servidor->setDescricao(descricao);
+                return "Descrição do servidor \'" + nome + "\' modificada!";
+
+            }else{
+                return "Você não pode alterar a descrição de um servidor que não foi criado por você!";
+            }
+
+        }else{
+            return "Servidor \'" + nome + "\' não existe!";
+        }
+    }
+
+    return "Não está conectado";
 }
 
 std::string Sistema::set_server_invite_code(const std::string nome, const std::string codigo){
