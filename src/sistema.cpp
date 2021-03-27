@@ -75,9 +75,16 @@ std::string Sistema::login(const std::string email, const std::string senha){
 
 std::string Sistema::disconnect(){
 
-    if(usuarioLogadoId != 0){ // Verifica algum usuário está logado
-        std::cout << "Desconectando usuário " << usuarios[usuarioLogadoId - 1].getEmail();
-        usuarioLogadoId = 0; // Define a variável como 0, significando que não há usuários logados
+    // Verifica algum usuário está logado
+    if(usuarioLogadoId){
+        
+        // Guarda o retorno da função em uma string
+        std::string retorno = "Desconectando usuário " + usuarios[usuarioLogadoId - 1].getEmail();
+
+        // Define a variável como 0, determinando que não há usuários logados
+        usuarioLogadoId = 0;
+
+        return retorno;
     }
 
     return "Não está conectado!";
