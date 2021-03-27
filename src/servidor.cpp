@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <string>
 
 #include "../include/servidor.hpp"
@@ -12,6 +13,30 @@ Servidor::Servidor(int usuarioDonoID, std::string nome){
     this->usuarioDonoID = usuarioDonoID;
     this->nome = nome;
     this->codigoConvite = "";
+}
+
+// Insere um usuário na lista de participantes do servidor
+bool Servidor::adicionaParticipante(int usuarioID){
+
+    // Iterator de vector de IDs
+    std::vector<int>::iterator it_participantesIDs;
+
+    // Procura um usuário com o ID recebido no vector de participantes
+    it_participantesIDs = std::find(participantesIDs.begin(), participantesIDs.end(), usuarioID);
+
+    // Verifica se o ID não foi encontrado no vector de participantes
+    if(it_participantesIDs == participantesIDs.end()){
+
+        // Insere o número 
+        participantesIDs.push_back(usuarioID);
+
+        // Retorna código de sucesso
+        return true;
+    
+    }else{
+        // Retorna código de erro
+        return false;
+    }
 }
 
 // Retorna o ID do usuário dono do servidor

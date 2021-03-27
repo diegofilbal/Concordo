@@ -21,6 +21,8 @@ class Servidor{
         Servidor();
         Servidor(int usuarioDonoID, std::string nome);
 
+        bool adicionaParticipante(int usuarioID);
+
         int getUsuarioDonoID();
 
         void setNome(std::string const nome);
