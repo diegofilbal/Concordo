@@ -210,7 +210,38 @@ std::string Sistema::list_servers(){
 }
 
 std::string Sistema::remove_server(const std::string nome){
-    return "remove_server NÃO IMPLEMENTADO";
+    
+    // Verifica se há algum usuário conectado
+    if(usuarioLogadoId){
+
+        // Iterator de vector de servidores
+        std::vector<Servidor>::iterator it_servidor;
+
+        // Procura algum servidor com o nome inserido
+        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
+            return servidor.getNome() == nome;
+        });
+
+        // Verifica se a busca do find_if retornou algum servidor válido
+        if(it_servidor != servidores.end()){
+
+            // Verifica se o usuário que solicitou a remoção é dono do servidor
+            if(it_servidor->getUsuarioDonoID() == usuarioLogadoId){
+
+                // Remove o servidor
+                servidores.erase(it_servidor);
+                return "Servidor \'" + nome + "\' removido!";
+
+            }else{
+                return "Você não é dono do servidor \'" + nome + "\'!";
+            }
+
+        }else{
+            return "Servidor \'" + nome + "\' não existe!";
+        }
+    }
+
+    return "Não está conectado!";
 }
 
 std::string Sistema::enter_server(const std::string nome, const std::string codigo){
