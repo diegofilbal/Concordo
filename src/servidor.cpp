@@ -7,10 +7,11 @@ Servidor::Servidor(){
 
 }
 
-// Construtor cópia
+// Construtor sobrecarregado
 Servidor::Servidor(int usuarioDonoID, std::string nome){
     this->usuarioDonoID = usuarioDonoID;
     this->nome = nome;
+    this->codigoConvite = "";
 }
 
 // Retorna o ID do usuário dono do servidor
@@ -39,7 +40,7 @@ std::string Servidor::getDescricao() const{
 }
 
 // Define o código de convite
-void Servidor::setCodigoConvite(std::string const nome){
+void Servidor::setCodigoConvite(std::string const codigoConvite){
     this->codigoConvite = codigoConvite;
 }
 
