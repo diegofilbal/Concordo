@@ -92,12 +92,20 @@ std::string Sistema::disconnect(){
 
 std::string Sistema::create_server(const std::string nome){
 
-    if(usuarioLogadoId != 0){ // Verifica se há algum usuário logado
+    // Verifica se há algum usuário logado
+    if(usuarioLogadoId){
 
-        for(size_t i = 0; i < servidores.size(); i++){ // Percorre o vector de servidores
-            if(servidores[i].getNome() == nome){ // Verifica se já existe um servidor com o nome inserido
-                return "Servidor com esse nome já existe!";
-            }            
+        // Iterator de vector de servidores
+        std::vector<Servidor>::iterator it_servidor;
+
+        // Procura algum servidor com o nome inserido
+        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
+            return servidor.getNome() == nome;
+        });
+
+        // Verifica se a busca do find_if retornou algum servidor
+        if(it_servidor != servidores.end()){
+            return "Servidor com esse nome já existe!";
         }
 
         // Cria novo servidor e insere no vector
