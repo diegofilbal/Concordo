@@ -102,6 +102,9 @@ std::string Sistema::create_server(const std::string nome){
         Servidor novo_servidor(usuarioLogadoId, nome);
         servidores.push_back(novo_servidor);
 
+        // Adiciona o dono do servidor à lista de participantes
+        servidores.back().adicionaParticipante(usuarioLogadoId);
+
         return "Servidor criado!";
     }
 
@@ -245,7 +248,74 @@ std::string Sistema::remove_server(const std::string nome){
 }
 
 std::string Sistema::enter_server(const std::string nome, const std::string codigo){
-    return "enter_server NÃO IMPLEMENTADO";
+
+    // Verifica se há algum usuário conectado
+    if(usuarioLogadoId){
+
+        // Iterator de vector de servidores
+        std::vector<Servidor>::iterator it_servidor;
+
+        // Procura algum servidor com o nome inserido
+        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
+            return servidor.getNome() == nome;
+        });
+
+        // Verifica se a busca do find_if retornou algum servidor válido
+        if(it_servidor != servidores.end()){
+
+            // Variável para armazenar retorno da função adicionaParticipante()
+            bool retorno;
+
+            // Verifica se o servidor é aberto
+            if(it_servidor->getCodigoConvite().empty()){
+
+                // Adiciona o usuário na lista de participantes do servidor
+                retorno = it_servidor->adicionaParticipante(usuarioLogadoId);
+
+            }else{
+
+                // Verifca se o usuário que quer entrar é o dono do servidor
+                if(it_servidor->getUsuarioDonoID() == usuarioLogadoId){
+
+                    // Adiciona o usuário na lista de participantes do servidor
+                    retorno = it_servidor->adicionaParticipante(usuarioLogadoId);
+
+                }else{
+
+                    // Verifica se o código de convite foi inserido
+                    if(!codigo.empty()){
+
+                        // Verifica se o código de convite inserido está correto
+                        if(it_servidor->getCodigoConvite() == codigo){
+
+                            // Adiciona o usuário na lista de participantes do servidor
+                            retorno = it_servidor->adicionaParticipante(usuarioLogadoId);
+                        
+                        }else{
+                            return "Código de convite inválido!";
+                        }
+
+                    }else{
+                        return "Servidor requer código de convite!";
+                    }
+                }
+            }
+
+            // Define o servidor conectado no momento
+            nomeServidorConectado = it_servidor->getNome();
+
+            // Verifica o retorno para saber se o usuário foi inserido ou se já era participante
+            if(retorno)
+                return "Entrou no servidor com sucesso!";
+            else
+                return "O usuário já está na lista de participantes do servidor!";
+
+        }else{
+            return "Servidor \'" + nome + "\' não existe!";
+        }
+    }
+
+    return "Não está conectado!";
 }
 
 std::string Sistema::leave_server(){
