@@ -48,20 +48,29 @@ std::string Sistema::create_user(const std::string email, const std::string senh
 
 std::string Sistema::login(const std::string email, const std::string senha){
 
-    if(!usuarioLogadoId){ // Verifica se nenhum usuário está logado
-        for(size_t i = 0; i < usuarios.size(); i++){ // Percorre o vector de usuários
-            if(usuarios[i].getEmail() == email){ // Verifica se há algum usuário com o email inserido
-                if(usuarios[i].getSenha() == senha){ // Verifica se a senha inserida é correta
-                    usuarioLogadoId = usuarios[i].getId(); // Define qual usuário está logado no sistema
-                    return "Logado como " + usuarios[i].getEmail() + "!";
-                }
-            }
+    // Verifica se nenhum usuário está logado
+    if(!usuarioLogadoId){
+
+        // Iterator de vector de usuários
+        std::vector<Usuario>::iterator it_usuario;
+
+        // Procura algum usuário com o email e senha inseridos
+        it_usuario = std::find_if(usuarios.begin(), usuarios.end(), [email, senha](Usuario usuario) {
+            return usuario.getEmail() == email && usuario.getSenha() == senha;
+        });
+
+        // Verifica se a busca foi bem sucedida
+        if(it_usuario != usuarios.end()){
+
+            // Define qual usuário está logado no sistema
+            usuarioLogadoId = it_usuario->getId();
+            return "Logado como " + it_usuario->getEmail() + "!";
         }
 
         return "Senha ou usuário inválidos!";
     }
 
-    return "Operação indisponível!\nUsuário " + usuarios[usuarioLogadoId - 1].getEmail() + " conectado!";
+    return "Operação indisponível! Usuário " + usuarios[usuarioLogadoId - 1].getEmail() + " conectado!";
 }
 
 std::string Sistema::disconnect(){
