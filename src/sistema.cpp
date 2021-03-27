@@ -19,13 +19,21 @@ std::string Sistema::quit(){
 
 std::string Sistema::create_user(const std::string email, const std::string senha, const std::string nome){
     
-    if(!usuarioLogadoId){ // Verifica se nehnum usuário está logado
+    // Verifica se nehnum usuário está logado
+    if(!usuarioLogadoId){
         std::cout << "Criando usuário " << nome << " (" << email << ")" << std::endl;
 
-        for(size_t i = 0; i < usuarios.size(); i++){ // Percorre o vector de usuários
-            if(usuarios[i].getEmail() == email){ // Verifica se há algum usuário com o email inserido
-                return "Usuário já existe!";
-            }
+        // Iterator de vector de usuários
+        std::vector<Usuario>::iterator it_usuario;
+
+        // Procura algum usuário com o email inserido
+        it_usuario = std::find_if(usuarios.begin(), usuarios.end(), [email](Usuario usuario){
+            return usuario.getEmail() == email;
+        });
+
+        // Verifica se a busca do find_if retornou algum usuário
+        if(it_usuario != usuarios.end()){
+            return "Usuário já existe!";
         }
 
         // Cria o novo usuário e insere no vector
@@ -35,7 +43,7 @@ std::string Sistema::create_user(const std::string email, const std::string senh
         return "Usuário criado!";
     }
 
-    return "Operação indisponível!\nUsuário " + usuarios[usuarioLogadoId - 1].getEmail() + " conectado!";
+    return "Operação indisponível! Usuário " + usuarios[usuarioLogadoId - 1].getEmail() + " conectado!";
 }
 
 std::string Sistema::login(const std::string email, const std::string senha){
