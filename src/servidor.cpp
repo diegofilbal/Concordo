@@ -73,3 +73,8 @@ void Servidor::setCodigoConvite(std::string const codigoConvite){
 std::string Servidor::getCodigoConvite() const{
     return codigoConvite;
 }
+
+// Retorna o vector de IDs dos participantes
+std::vector<int> Servidor::getParticipantesIDs(){
+    return participantesIDs;
+}

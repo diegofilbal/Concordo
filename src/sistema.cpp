@@ -210,7 +210,7 @@ std::string Sistema::list_servers(){
         // Iterator de vector de servidores
         std::vector<Servidor>::iterator it_servidor;
 
-        // Insere o nome dos servidores na variável de retorno
+        // Concatena o nome dos servidores na variável de retorno
         for(it_servidor = servidores.begin(); it_servidor != servidores.end(); it_servidor++){
             if(it_servidor != servidores.end() - 1)
                 nome_servidores_retorno += it_servidor->getNome() + "\n";
@@ -357,7 +357,47 @@ std::string Sistema::leave_server(){
 }
 
 std::string Sistema::list_participants(){
-    return "list_participants NÃO IMPLEMENTADO";
+    
+    // Verifica se há algum usuário conectado
+    if(usuarioLogadoId){
+
+        // Verifica se o usuário não está conectado a nenhum servidor no momento
+        if(nomeServidorConectado.empty()){
+            return "Não está conectado a nenhum servidor!";
+        }
+
+        // Iterator de vetor de servidores
+        std::vector<Servidor>::iterator it_servidor;
+
+        // Variável que armazena o nome do servidor conectado no momento
+        std::string nome = nomeServidorConectado;
+
+        // Busca o servidor que o usuário está conectado no momento
+        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor) {
+            return servidor.getNome() == nome;
+        });
+
+        // Vector para receber o vector de IDs dos participantes do servidor
+        std::vector <int> listaIDs = it_servidor->getParticipantesIDs();
+
+        // Iterator de vector de IDs
+        std::vector<int>::iterator it_IDs;
+
+        // String de retorno da função
+        std::string retorno = "";
+
+        // Concatena o nome de todos os participantes do servidor na variável de retorno
+        for (it_IDs = listaIDs.begin(); it_IDs != listaIDs.end(); it_IDs++){
+            if(it_IDs != listaIDs.end() - 1)
+                retorno += usuarios[*it_IDs - 1].getNome() + "\n";
+            else
+                retorno += usuarios[*it_IDs - 1].getNome();
+        }
+
+        return retorno;
+    }
+
+    return "Não está conectado!";
 }
 
 std::string Sistema::list_channels(){

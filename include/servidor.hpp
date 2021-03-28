@@ -33,4 +33,6 @@ class Servidor{
 
         void setCodigoConvite(std::string const nome);
         std::string getCodigoConvite() const;
+
+        std::vector<int> getParticipantesIDs();
 };
