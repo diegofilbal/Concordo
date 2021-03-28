@@ -243,6 +243,10 @@ std::string Sistema::remove_server(const std::string nome){
             // Verifica se o usuário que solicitou a remoção é dono do servidor
             if(it_servidor->getUsuarioDonoID() == usuarioLogadoId){
 
+                // Se o servidor conectado no momento for o mesmo a ser removido, o usuário é desconectado dele antes da remoção
+                if(it_servidor->getNome() == nomeServidorConectado)
+                    leave_server();
+
                 // Remove o servidor
                 servidores.erase(it_servidor);
                 return "Servidor \'" + nome + "\' removido!";
