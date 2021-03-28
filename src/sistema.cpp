@@ -92,6 +92,11 @@ std::string Sistema::create_server(const std::string nome){
     // Verifica se há algum usuário logado
     if(usuarioLogadoId){
 
+        // Verifica se o nome inserido é vazio
+        if(nome.empty()){
+            return "Não é possível criar um servidor sem nome!";
+        }
+        
         // Iterator de vector de servidores
         std::vector<Servidor>::iterator it_servidor;
 
@@ -105,12 +110,14 @@ std::string Sistema::create_server(const std::string nome){
             return "Servidor com esse nome já existe!";
         }
 
-        // Cria novo servidor e insere no vector
+        // Cria novo servidor
         Servidor novo_servidor(usuarioLogadoId, nome);
-        servidores.push_back(novo_servidor);
 
         // Adiciona o dono do servidor à lista de participantes
-        servidores.back().adicionaParticipante(usuarioLogadoId);
+        novo_servidor.adicionaParticipante(usuarioLogadoId);
+
+        // Insere o novo servidor no vector de servidores
+        servidores.push_back(novo_servidor);
 
         return "Servidor criado!";
     }
