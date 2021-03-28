@@ -331,7 +331,25 @@ std::string Sistema::enter_server(const std::string nome, const std::string codi
 }
 
 std::string Sistema::leave_server(){
-    return "leave_server NÃO IMPLEMENTADO";
+
+    // Verifica se há algum usuário logado
+    if(usuarioLogadoId){
+
+        // Verifica se o usuário já não está conectado a nenhum servidor no momento
+        if(nomeServidorConectado.empty()){
+            return "Você não está visualizando nenhum servidor!";
+        }
+
+        // Variável para guardar a string de retorno da função
+        std::string retorno = "Saindo do servidor \'" + nomeServidorConectado + "\'!";
+
+        // Desconecta o usuário do servidor
+        nomeServidorConectado = "";
+
+        return retorno;
+    }
+
+    return "Não está conectado!";
 }
 
 std::string Sistema::list_participants(){
