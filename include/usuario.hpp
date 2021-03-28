@@ -14,7 +14,6 @@ class Usuario{
 
         Usuario();
         Usuario(int id, std::string email, std::string senha, std::string nome);
-        ~Usuario();
 
         int getId() const;
 

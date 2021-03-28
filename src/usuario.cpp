@@ -3,7 +3,9 @@
 #include "../include/usuario.hpp"
 
 // Construtor padrão
-Usuario::Usuario(){}
+Usuario::Usuario(){
+
+}
 
 // Construtor sobrecarregado
 Usuario::Usuario(int id, std::string email, std::string senha, std::string nome){ 
@@ -14,11 +16,7 @@ Usuario::Usuario(int id, std::string email, std::string senha, std::string nome)
     this->nome = nome;
 }
 
-Usuario::~Usuario(){
-
-}
-
-// Retrona o id do usuário
+// Retrona o ID do usuário
 int Usuario::getId() const{
     return id;
 }

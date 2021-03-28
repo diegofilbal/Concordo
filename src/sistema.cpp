@@ -9,15 +9,18 @@
 
 // Construtor
 Sistema::Sistema(){
+    // Inicializa os atributos
     usuarioLogadoId = 0;
     nomeServidorConectado = "";
     nomeCanalConectado = "";
 }
 
+// Função do comando "quit"
 std::string Sistema::quit(){
     return "Saindo do Concordo...";
 }
 
+// Função do comando "create-user"
 std::string Sistema::create_user(const std::string email, const std::string senha, const std::string nome){
     
     std::cout << "Criando usuário " << nome << " (" << email << ")" << std::endl;
@@ -42,6 +45,7 @@ std::string Sistema::create_user(const std::string email, const std::string senh
     return "Usuário criado!";
 }
 
+// Função do comando "login"
 std::string Sistema::login(const std::string email, const std::string senha){
 
     // Iterator de vector de usuários
@@ -67,6 +71,7 @@ std::string Sistema::login(const std::string email, const std::string senha){
     return "Senha ou usuário inválidos!";
 }
 
+// Função do comando "disconnect"
 std::string Sistema::disconnect(){
 
     // Verifica algum usuário está logado
@@ -87,6 +92,7 @@ std::string Sistema::disconnect(){
     return "Não está conectado!";
 }
 
+// Função do comando "create-server"
 std::string Sistema::create_server(const std::string nome){
 
     // Verifica se há algum usuário logado
@@ -125,6 +131,7 @@ std::string Sistema::create_server(const std::string nome){
     return "Não está conectado!";
 }
 
+// Função do comando "set-server-desc"
 std::string Sistema::set_server_desc(const std::string nome, const std::string descricao){
 
     // Verifica se há algum usuário conectado
@@ -146,6 +153,7 @@ std::string Sistema::set_server_desc(const std::string nome, const std::string d
 
                 // Altera a descrição do servidor
                 it_servidor->setDescricao(descricao);
+                
                 return "Descrição do servidor \'" + nome + "\' modificada!";
 
             }else{
@@ -160,6 +168,7 @@ std::string Sistema::set_server_desc(const std::string nome, const std::string d
     return "Não está conectado!";
 }
 
+// Função do comando "set-server-invite-code"
 std::string Sistema::set_server_invite_code(const std::string nome, const std::string codigo){
 
     // Verifica se há algum usuário conectado
@@ -201,6 +210,7 @@ std::string Sistema::set_server_invite_code(const std::string nome, const std::s
     return "Não está conectado!";
 }
 
+// Função do comando "list-servers"
 std::string Sistema::list_servers(){
 
     // Verifica se há algum usuário conectado
@@ -212,7 +222,7 @@ std::string Sistema::list_servers(){
         }
 
         // Variável para armezenar o retorno da função
-        std::string nome_servidores_retorno = "";
+        std::string retorno = "";
 
         // Iterator de vector de servidores
         std::vector<Servidor>::iterator it_servidor;
@@ -220,17 +230,18 @@ std::string Sistema::list_servers(){
         // Concatena o nome dos servidores na variável de retorno
         for(it_servidor = servidores.begin(); it_servidor != servidores.end(); it_servidor++){
             if(it_servidor != servidores.end() - 1)
-                nome_servidores_retorno += it_servidor->getNome() + "\n";
+                retorno += it_servidor->getNome() + "\n";
             else
-                nome_servidores_retorno += it_servidor->getNome();
+                retorno += it_servidor->getNome();
         }
 
-        return nome_servidores_retorno;
+        return retorno;
     }
 
     return "Não está conectado!";
 }
 
+// Função do comando "remove-server"
 std::string Sistema::remove_server(const std::string nome){
     
     // Verifica se há algum usuário conectado
@@ -270,6 +281,7 @@ std::string Sistema::remove_server(const std::string nome){
     return "Não está conectado!";
 }
 
+// Função do comando "enter-server"
 std::string Sistema::enter_server(const std::string nome, const std::string codigo){
 
     // Verifica se há algum usuário conectado
@@ -341,6 +353,7 @@ std::string Sistema::enter_server(const std::string nome, const std::string codi
     return "Não está conectado!";
 }
 
+// Função do comando "leave-server"
 std::string Sistema::leave_server(){
 
     // Verifica se há algum usuário logado
@@ -363,6 +376,7 @@ std::string Sistema::leave_server(){
     return "Não está conectado!";
 }
 
+// Função do comando "list-participants"
 std::string Sistema::list_participants(){
     
     // Verifica se há algum usuário conectado
@@ -407,26 +421,32 @@ std::string Sistema::list_participants(){
     return "Não está conectado!";
 }
 
+// Função do comando "list-channels"
 std::string Sistema::list_channels(){
     return "list_channels NÃO IMPLEMENTADO";
 }
 
+// Função do comando "create-channel"
 std::string Sistema::create_channel(const std::string nome, const std::string tipo){
     return "create_channel NÃO IMPLEMENTADO";
 }
 
+// Função do comando "enter-channel"
 std::string Sistema::enter_channel(const std::string nome){
     return "enter_channel NÃO IMPLEMENTADO";
 }
 
+// Função do comando "leave-channel"
 std::string Sistema::leave_channel(){
     return "leave_channel NÃO IMPLEMENTADO";
 }
 
+// Função do comando "send-message"
 std::string Sistema::send_message(const std::string mensagem){
     return "send_message NÃO IMPLEMENTADO";
 }
 
+// Função do comando "list-messages"
 std::string Sistema::list_messages(){
     return "list_messages NÃO IMPLEMENTADO";
 }

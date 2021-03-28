@@ -11,7 +11,7 @@ class Sistema{
     private:
         std::vector <Usuario> usuarios;
         std::vector <Servidor> servidores;
-        int usuarioLogadoId; // se 0: não logado, caso contrário guarda o id do usuário logado
+        int usuarioLogadoId;
         std::string nomeServidorConectado;
         std::string nomeCanalConectado;
 
