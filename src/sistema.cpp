@@ -25,11 +25,8 @@ std::string Sistema::create_user(const std::string email, const std::string senh
     
     std::cout << "Criando usuário " << nome << " (" << email << ")" << std::endl;
 
-    // Iterator de vector de usuários
-    std::vector<Usuario>::iterator it_usuario;
-
     // Procura algum usuário com o email inserido
-    it_usuario = std::find_if(usuarios.begin(), usuarios.end(), [email](Usuario usuario){
+    auto it_usuario = std::find_if(usuarios.begin(), usuarios.end(), [email](Usuario usuario){
         return usuario.getEmail() == email;
     });
 
@@ -48,11 +45,8 @@ std::string Sistema::create_user(const std::string email, const std::string senh
 // Função do comando "login"
 std::string Sistema::login(const std::string email, const std::string senha){
 
-    // Iterator de vector de usuários
-    std::vector<Usuario>::iterator it_usuario;
-
     // Procura algum usuário com o email e senha inseridos
-    it_usuario = std::find_if(usuarios.begin(), usuarios.end(), [email, senha](Usuario usuario) {
+    auto it_usuario = std::find_if(usuarios.begin(), usuarios.end(), [email, senha](Usuario usuario) {
         return usuario.getEmail() == email && usuario.getSenha() == senha;
     });
 
@@ -102,12 +96,9 @@ std::string Sistema::create_server(const std::string nome){
         if(nome.empty()){
             return "Não é possível criar um servidor sem nome!";
         }
-        
-        // Iterator de vector de servidores
-        std::vector<Servidor>::iterator it_servidor;
 
         // Procura algum servidor com o nome inserido
-        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
             return servidor.getNome() == nome;
         });
 
@@ -137,11 +128,8 @@ std::string Sistema::set_server_desc(const std::string nome, const std::string d
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
 
-        // Iterator de vector de servidores
-        std::vector<Servidor>::iterator it_servidor;
-
         // Procura algum servidor com o nome inserido
-        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
             return servidor.getNome() == nome;
         });
 
@@ -174,11 +162,8 @@ std::string Sistema::set_server_invite_code(const std::string nome, const std::s
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
 
-        // Iterator de vector de servidores
-        std::vector<Servidor>::iterator it_servidor;
-
         // Procura algum servidor com o nome inserido
-        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
             return servidor.getNome() == nome;
         });
 
@@ -224,11 +209,8 @@ std::string Sistema::list_servers(){
         // Variável para armezenar o retorno da função
         std::string retorno = "";
 
-        // Iterator de vector de servidores
-        std::vector<Servidor>::iterator it_servidor;
-
         // Concatena o nome dos servidores na variável de retorno
-        for(it_servidor = servidores.begin(); it_servidor != servidores.end(); it_servidor++){
+        for(auto it_servidor = servidores.begin(); it_servidor != servidores.end(); it_servidor++){
             if(it_servidor != servidores.end() - 1)
                 retorno += it_servidor->getNome() + "\n";
             else
@@ -247,11 +229,8 @@ std::string Sistema::remove_server(const std::string nome){
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
 
-        // Iterator de vector de servidores
-        std::vector<Servidor>::iterator it_servidor;
-
         // Procura algum servidor com o nome inserido
-        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
             return servidor.getNome() == nome;
         });
 
@@ -287,11 +266,8 @@ std::string Sistema::enter_server(const std::string nome, const std::string codi
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
 
-        // Iterator de vector de servidores
-        std::vector<Servidor>::iterator it_servidor;
-
         // Procura algum servidor com o nome inserido
-        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor){
             return servidor.getNome() == nome;
         });
 
@@ -387,28 +363,22 @@ std::string Sistema::list_participants(){
             return "Não está conectado a nenhum servidor!";
         }
 
-        // Iterator de vetor de servidores
-        std::vector<Servidor>::iterator it_servidor;
-
         // Variável que armazena o nome do servidor conectado no momento
         std::string nome = nomeServidorConectado;
 
         // Busca o servidor que o usuário está conectado no momento
-        it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor) {
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor) {
             return servidor.getNome() == nome;
         });
 
         // Vector para receber o vector de IDs dos participantes do servidor
         std::vector <int> listaIDs = it_servidor->getParticipantesIDs();
 
-        // Iterator de vector de IDs
-        std::vector<int>::iterator it_IDs;
-
         // String de retorno da função
         std::string retorno = "";
 
         // Concatena o nome de todos os participantes do servidor na variável de retorno
-        for (it_IDs = listaIDs.begin(); it_IDs != listaIDs.end(); it_IDs++){
+        for (auto it_IDs = listaIDs.begin(); it_IDs != listaIDs.end(); it_IDs++){
             if(it_IDs != listaIDs.end() - 1)
                 retorno += usuarios[*it_IDs - 1].getNome() + "\n";
             else
