@@ -393,7 +393,70 @@ std::string Sistema::list_participants(){
 
 // Função do comando "list-channels"
 std::string Sistema::list_channels(){
-    return "list_channels NÃO IMPLEMENTADO";
+
+    // Verifica se há algum usuário conectado
+    if(usuarioLogadoId) {
+
+        // Verifica se o usuário está conectado a algum servidor
+        if(nomeServidorConectado.empty()) {
+            return "Não está conectado a nenhum servidor!";
+        }
+
+        // Variável que armazena o nome do servidor conectado no momento
+        std::string nome = nomeServidorConectado;
+
+        // Busca o servidor que o usuário está conectado no momento
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome](Servidor servidor) {
+            return servidor.getNome() == nome;
+        });
+
+        // Recebe a lista de canais de texto do servidor atual
+        std::vector <std::string> c_texto = it_servidor->getCanaisTexto();
+
+        // Recebe a lista de canais de voz do servidor atual
+        std::vector <std::string> c_voz = it_servidor->getCanaisVoz();
+
+        // Verifica se não há nenhum canal cadastrado
+        if(c_texto.empty() && c_voz.empty()){
+            return "Nenhum canal no servidor!";
+        }
+        
+        // Variável de retorno para concatenar o nome dos canais
+        std::string retorno;
+
+        // Verifica se há canais de texto cadastrados
+        if(!c_texto.empty()){
+            retorno += "#canais de texto\n";
+
+            // Concatena o nome dos canais de texto à string de retorno
+            for(auto it_str = c_texto.begin(); it_str != c_texto.end(); ++it_str){
+                if(it_str != c_texto.end() - 1)
+                    retorno += *it_str + "\n";
+                else
+                    retorno += *it_str;
+            }
+        }
+
+        // Verifica se há canais de voz cadastrados
+        if(!c_voz.empty()){
+
+            if(!c_texto.empty()) retorno += "\n";
+
+            retorno += "#canais de voz\n";
+
+            // Concatena o nome dos canais de voz à string de retorno
+            for(auto it_str = c_voz.begin(); it_str != c_voz.end(); ++it_str){
+                if(it_str != c_voz.end() - 1)
+                    retorno += *it_str + "\n";
+                else
+                    retorno += *it_str;
+            }
+        }
+
+        return retorno;
+    }
+
+    return "Não está conectado!";
 }
 
 // Função do comando "create-channel"

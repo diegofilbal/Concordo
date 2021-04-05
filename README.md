@@ -191,6 +191,28 @@ Se a remoção do servidor for solicitada por algum usuário que não o seu dono
     remove-server gartic
     "Você não é dono do servidor 'gartic'!"
 
+### Comando list-channels
+
+Para listar todos os canais de texto e de áudio do servidor ao qual o usuário está conectado no momento, insira o comando _list-channels_:
+
+    list-channels
+    "#canais de texto"
+    "bate-papo-among"
+    "#canais de voz"
+    "the-skeld"
+    "mira-hq"
+    "polus"
+
+Caso o servidor não tenha nenhum canal cadastrado, a seguinte mensagem é exibida:
+
+    list-channels
+    "Nenhum canal no servidor!"
+
+Se o usuário não estiver conectado a nenhum servidor, o seguinte aviso é exibido:
+
+    list-channels
+    "Não está conectado a nenhum servidor!"
+
 ## Autoria
 
 Desenvolvido por [Diego Filgueiras Balderrama](https://github.com/diegofilbal) a partir do [código base](https://github.com/isaacfranco/lp1-concordo-base) do professor Isaac Franco Fernandes. 

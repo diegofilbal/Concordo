@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -22,6 +23,8 @@ class Servidor{
         Servidor(int const usuarioDonoID, std::string const nome);
 
         bool adicionaParticipante(int const usuarioID);
+        std::vector <std::string> getCanaisTexto() const;
+        std::vector <std::string> getCanaisVoz() const;
 
         int getUsuarioDonoID() const;
 

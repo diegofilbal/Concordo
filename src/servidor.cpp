@@ -1,6 +1,9 @@
 #include <algorithm>
+#include <iostream>
+#include <memory>
 #include <string>
 
+#include "../include/canal.hpp"
 #include "../include/servidor.hpp"
 
 // Construtor padrão
@@ -37,6 +40,40 @@ bool Servidor::adicionaParticipante(int const usuarioID){
         // Retorna código de erro
         return false;
     }
+}
+
+// Retorna um vector com o nome dos canais de texto
+std::vector <std::string> Servidor::getCanaisTexto() const {
+
+    // Vector para armazenar o nome dos canais de texto do servidor
+    std::vector <std::string> nomes_texto;
+
+    // Percorre o vector de canais
+    for(auto it_canal = canais.begin(); it_canal != canais.end(); it_canal++){
+
+        // Verifica se o canal atual é do tipo texto para adicioná-lo ao vector a ser retornado
+        if(std::dynamic_pointer_cast <CanalTexto> (*it_canal))
+            nomes_texto.push_back((*it_canal)->getNome());
+    }
+
+    return nomes_texto;
+}
+
+// Retorna um vector com o nome dos canais de voz do servidor
+std::vector <std::string> Servidor::getCanaisVoz() const {
+
+    // Variável para armazenar no nome dos canais de texto
+    std::vector <std::string> nomes_voz;
+
+    // Percorre o vector de canais
+    for(auto it_canal = canais.begin(); it_canal != canais.end(); it_canal++){
+        
+        // Verifica se o canal atual é do tipo voz para adicioná-lo ao vector a ser retornado
+        if(std::dynamic_pointer_cast <CanalVoz> (*it_canal))
+            nomes_voz.push_back((*it_canal)->getNome());
+    }
+
+    return nomes_voz;
 }
 
 // Retorna o ID do usuário dono do servidor
