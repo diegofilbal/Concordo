@@ -13,17 +13,17 @@ class Servidor{
     private:
         int usuarioDonoID;
         std::string nome, descricao, codigoConvite;
-        std::vector <Canal> canais;
+        std::vector <std::shared_ptr <Canal>> canais;
         std::vector <int> participantesIDs;
 
     // Métodos da classe
     public:
         Servidor();
-        Servidor(int usuarioDonoID, std::string nome);
+        Servidor(int const usuarioDonoID, std::string const nome);
 
-        bool adicionaParticipante(int usuarioID);
+        bool adicionaParticipante(int const usuarioID);
 
-        int getUsuarioDonoID();
+        int getUsuarioDonoID() const;
 
         void setNome(std::string const nome);
         std::string getNome() const;
@@ -34,5 +34,5 @@ class Servidor{
         void setCodigoConvite(std::string const nome);
         std::string getCodigoConvite() const;
 
-        std::vector<int> getParticipantesIDs();
+        std::vector<int> getParticipantesIDs() const;
 };

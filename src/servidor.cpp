@@ -9,14 +9,14 @@ Servidor::Servidor(){
 }
 
 // Construtor sobrecarregado
-Servidor::Servidor(int usuarioDonoID, std::string nome){
+Servidor::Servidor(int const usuarioDonoID, std::string const nome){
     this->usuarioDonoID = usuarioDonoID;
     this->nome = nome;
     this->codigoConvite = "";
 }
 
 // Insere um usuário na lista de participantes do servidor
-bool Servidor::adicionaParticipante(int usuarioID){
+bool Servidor::adicionaParticipante(int const usuarioID){
 
     // Iterator de vector de IDs
     std::vector<int>::iterator it_participantesIDs;
@@ -40,7 +40,7 @@ bool Servidor::adicionaParticipante(int usuarioID){
 }
 
 // Retorna o ID do usuário dono do servidor
-int Servidor::getUsuarioDonoID(){
+int Servidor::getUsuarioDonoID() const{
     return usuarioDonoID;
 }
 
@@ -75,6 +75,6 @@ std::string Servidor::getCodigoConvite() const{
 }
 
 // Retorna o vector de IDs dos participantes
-std::vector<int> Servidor::getParticipantesIDs(){
+std::vector<int> Servidor::getParticipantesIDs() const{
     return participantesIDs;
 }
