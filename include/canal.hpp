@@ -10,7 +10,7 @@ class Canal{
 
     // Métodos da classe
     public:
-        void setNome(std::string const nome);
-        std::string getNome() const;
+        virtual void setNome(std::string const nome);
+        virtual std::string getNome() const;
 
 };

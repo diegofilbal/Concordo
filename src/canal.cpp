@@ -3,7 +3,7 @@
 #include "../include/canal.hpp"
 
 // Define o nome do canal
-void Canal::setNome(std::string nome){
+void Canal::setNome(std::string const nome){
     this->nome = nome;
 }
 
