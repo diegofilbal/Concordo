@@ -42,6 +42,25 @@ bool Servidor::adicionaParticipante(int const usuarioID){
     }
 }
 
+// Insere o canal recebido no parâmetro no vector de canais do servidor
+bool Servidor::criaCanal(std::shared_ptr <Canal> canal){
+
+    // Verifica se o ponteiro não é nulo
+    if(canal != nullptr){
+
+        // Insere o canal recebido no vector de canais do servidor
+        canais.push_back(canal);
+
+        // Retorna código de sucesso
+        return true;
+
+    }else{
+
+        // Retorna código de erro
+        return false;
+    }
+}
+
 // Retorna um vector com o nome dos canais de texto
 std::vector <std::string> Servidor::getCanaisTexto() const {
 

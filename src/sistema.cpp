@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <vector>
 
+#include "../include/canal.hpp"
+#include "../include/canal_texto.hpp"
+#include "../include/canal_voz.hpp"
 #include "../include/sistema.hpp"
 #include "../include/usuario.hpp"
 #include "../include/servidor.hpp"
@@ -461,7 +464,82 @@ std::string Sistema::list_channels(){
 
 // Função do comando "create-channel"
 std::string Sistema::create_channel(const std::string nome, const std::string tipo){
-    return "create_channel NÃO IMPLEMENTADO";
+
+    // Verifica se há algum usuário conectado
+    if(usuarioLogadoId){
+
+        // Verifica se o usuário está conectado a algum servidor
+        if(nomeServidorConectado.empty()) {
+            return "Não está conectado a nenhum servidor!";
+        }
+
+        // Variável que armazena o nome do servidor conectado no momento
+        std::string nome_servidor_temp = nomeServidorConectado;
+
+        // Busca o servidor que o usuário está conectado no momento
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome_servidor_temp](Servidor servidor) {
+            return servidor.getNome() == nome_servidor_temp;
+        });
+
+        // Verifica o tipo do canal a ser criado
+        if(tipo != "texto" && tipo != "voz")
+            return "Tipo de canal inválido!";
+
+        if(tipo == "texto"){
+
+            // Recebe a lista de canais de texto do servidor atual
+            std::vector <std::string> c_texto = it_servidor->getCanaisTexto();
+
+            // Busca um canal com o mesmo nome
+            auto it_str = std::find_if(c_texto.begin(), c_texto.end(), [nome](std::string nome_canal) {
+                return nome_canal == nome;
+            });
+
+            // Verifica se a busca achou um canal com o mesmo nome
+            if(it_str != c_texto.end())
+                return "Canal de texto \'" + nome + "\' já existe!";
+            
+            // Cria o canal de texto
+            std::shared_ptr <CanalTexto> novo_canal(new CanalTexto(nome));
+
+            // Insere o canal lista de canais do servidor e guarda o retorno do método
+            bool codigo = it_servidor->criaCanal(novo_canal);
+
+            // Verifica se a inserção foi realizada com sucesso
+            if(codigo)
+                return "Canal de texto \'" + nome + "\' criado!";
+            else
+                return "Erro inesperado ao criar canal de texto \'" + nome + "\'!";
+        
+        }else{
+
+            // Recebe a lista de canais de voz do servidor atual
+            std::vector <std::string> c_voz = it_servidor->getCanaisVoz();
+
+            // Busca um canal com o mesmo nome
+            auto it_str = std::find_if(c_voz.begin(), c_voz.end(), [nome](std::string nome_canal) {
+                return nome_canal == nome;
+            });
+
+            // Verifica se a busca achou um canal com o mesmo nome
+            if(it_str != c_voz.end())
+                return "Canal de voz \'" + nome + "\' já existe!";
+
+            // Cria o canal de voz
+            std::shared_ptr <CanalVoz> novo_canal(new CanalVoz(nome));
+
+            // Insere o canal lista de canais do servidor e guarda o retorno do método
+            bool codigo = it_servidor->criaCanal(novo_canal);
+
+            // Verifica se a inserção foi realizada com sucesso
+            if(codigo)
+                return "Canal de voz \'" + nome + "\' criado!";
+            else
+                return "Erro inesperado ao criar canal de voz \'" + nome + "\'!";
+        }
+    }
+
+    return "Não está conectado!";
 }
 
 // Função do comando "enter-channel"

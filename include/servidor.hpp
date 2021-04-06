@@ -23,6 +23,8 @@ class Servidor{
         Servidor(int const usuarioDonoID, std::string const nome);
 
         bool adicionaParticipante(int const usuarioID);
+        bool criaCanal(std::shared_ptr <Canal> const canal);
+
         std::vector <std::string> getCanaisTexto() const;
         std::vector <std::string> getCanaisVoz() const;
 

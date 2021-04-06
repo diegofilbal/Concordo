@@ -30,7 +30,7 @@ A utilização do programa é feita a partir de comandos. A listagem dos comando
 
 > Observação: Apenas os comandos _create-user_, _login_ e _quit_ não exigem que haja algum usuário conectado para executá-los. As demais operações necessitam de um usuário conectado.
 
-### Comando quit
+### Comando _quit_
 
 Para fechar a aplicação, use o comando _quit_:
 
@@ -39,7 +39,7 @@ Para fechar a aplicação, use o comando _quit_:
 
 > Este comando pode ser executado a qualquer momento pelo usuário.
 
-### Comando create-user
+### Comando _create-user_
 
 Para cadastrar um novo usuário ao sistema, digite o comando _create-user_ seguido do _email_, _senha_ e _nome_ do usuário, respectivamente:
 
@@ -53,7 +53,7 @@ O email do usuário deve ser único, caso haja a tentativa de cadastro de outro 
     "Criando usuário Diego Maradona (diego@email.com)"
     "Usuário já existe!"
 
-### Comando login
+### Comando _login_
 
 Para conectar algum usuário ao sistema, insira o comando _login_ seguido do _email_ e _senha_ cadastrados anteriormente:
 
@@ -64,8 +64,8 @@ Caso as informações de login do usuário sejam inseridas incorretamente, o pro
 
     login diego@email.com senhaerrada
     "Senha ou usuário inválidos!"
- 
-### Comando disconnect
+
+### Comando _disconnect_
 
 Para desconectar o usuário conectado no momento, use o comando _disconnect_:
 
@@ -77,7 +77,7 @@ Caso não haja nenhum usuário conectado, a seguinte mensagem é exibida:
     disconnect
     "Não está conectado!"
 
-### Comando create-server
+### Comando _create-server_
 
 Para criar um servidor, digite o comando _create-server_ seguido do _nome_ que deseja atribuir a ele:
 
@@ -91,7 +91,7 @@ Caso o servidor já exista, o seguinte aviso será exibido:
 
 > O usuário que cria o servidor é inserido na lista de participantes automaticamente e é definido como o dono do servidor.
 
-### Comando set-server-desc
+### Comando _set-server-desc_
 
 Para definir ou atualizar a descrição de um servidor, insira o comando _set-server-desc_ seguido do _nome_ do servidor e da _descrição_ que deseja atribuir a ele:
 
@@ -108,7 +108,7 @@ Se a mudança da descrição do servidor for solicitada por algum usuário que n
     set-server-desc among-us Servidor para jogar Among Us em grupo
     "Você não pode alterar a descrição de um servidor que não foi criado por você!"
 
-### Comando set-server-invite-code
+### Comando _set-server-invite-code_
 
 Todos os servidores são criados sem código de convite (servidores abertos). Para definir ou atualizar o código de convite de um servidor para torná-lo fechado, use o comando _set-server-invite-code_ seguido do _nome_ do servidor e do _código de convite_ que deseja atribuir a ele:
 
@@ -125,7 +125,7 @@ Caso a mudança do código de convite de um servidor seja solicitada por algum u
     set-server-invite-code among-us codigo000
     "Você não pode alterar o código de convite de um servidor que não foi criado por você!"
 
-### Comando list-servers
+### Comando _list-servers_
 
 Para listar todos os servidores do sistema, insira o comando _list-servers_:
 
@@ -134,7 +134,7 @@ Para listar todos os servidores do sistema, insira o comando _list-servers_:
     "gartic"
     "minecraft"
 
-### Comando enter-server
+### Comando _enter-server_
 
 Para entrar em um servidor aberto, use o comando _enter-server_ seguido do _nome_ do servidor que deseja entrar:
 
@@ -158,7 +158,7 @@ Se o servidor for fechado e nenhum código de convite for inserido, o seguinte a
 
 > Além de adicionar o usuário à lista de participantes do servidor, sempre que o comando _enter-server_ é executado com sucesso, o sistema salva a informação de que o usuário está visualizando aquele servidor no momento.
 
-### Comando leave-server
+### Comando _leave-server_
 
 Para se desconectar do servidor que o usuário está visualizando no momento, insira o comando _leave-server_:
 
@@ -170,7 +170,7 @@ Caso o usuário não esteja visualizando nenhum servidor no momento, a seguinte 
     leave-server
     "Você não está visualizando nenhum servidor!"
 
-### Comando list-participants
+### Comando _list-participants_
 
 Para listar o nome dos participantes do servidor que o usuário está visualizando no momento, digite o comando _list-participants_:
 
@@ -179,7 +179,7 @@ Para listar o nome dos participantes do servidor que o usuário está visualizan
     "Fulano da Silva"
     "Beltrano Oliveira"
 
-### Comando remove-server
+### Comando _remove-server_
 
 Para remover um servidor cadastrado, use o comando _remove-server_ seguido do _nome_ do servidor:
 
@@ -191,9 +191,31 @@ Se a remoção do servidor for solicitada por algum usuário que não o seu dono
     remove-server gartic
     "Você não é dono do servidor 'gartic'!"
 
-### Comando list-channels
+### Comando _create-channel_
 
-Para listar todos os canais de texto e de áudio do servidor ao qual o usuário está conectado no momento, insira o comando _list-channels_:
+Para criar um canal no servidor ao qual o usuário está conectado no momento, insira o comando _create-channel_ seguido do _nome_ que deseja atribuir ao novo canal e do seu _tipo_ (texto ou voz):
+
+    create-channel bate-papo-among texto
+    "Canal de texto 'bate-papo-among' criado!"
+
+Caso o usuário tente criar um canal com o mesmo nome e de mesmo tipo de algum outro canal já existente, a seguinte mensagem é exibida:
+
+    create-channel bate-papo-among texto
+    "Canal de texto 'bate-papo-among' já existe!"
+
+Caso o tipo do canal informado seja diferente de "texto" ou "voz", a seguinte mensagem é exibida:
+
+    create-channel impostores tipo-errado
+    "Tipo de canal inválido!"
+
+Se o usuário não estiver conectado a nenhum servidor, o seguinte aviso é exibido:
+
+    create-channel airship voz
+    "Não está conectado a nenhum servidor!"
+
+### Comando _list-channels_
+
+Para listar todos os canais de texto e de áudio do servidor ao qual o usuário está conectado no momento, digite o comando _list-channels_:
 
     list-channels
     "#canais de texto"
@@ -203,16 +225,11 @@ Para listar todos os canais de texto e de áudio do servidor ao qual o usuário 
     "mira-hq"
     "polus"
 
-Caso o servidor não tenha nenhum canal cadastrado, a seguinte mensagem é exibida:
+Se o servidor não tiver nenhum canal cadastrado, o seguinte aviso é exibido:
 
     list-channels
     "Nenhum canal no servidor!"
 
-Se o usuário não estiver conectado a nenhum servidor, o seguinte aviso é exibido:
-
-    list-channels
-    "Não está conectado a nenhum servidor!"
-
 ## Autoria
 
-Desenvolvido por [Diego Filgueiras Balderrama](https://github.com/diegofilbal) a partir do [código base](https://github.com/isaacfranco/lp1-concordo-base) do professor Isaac Franco Fernandes. 
+Desenvolvido por [Diego Filgueiras Balderrama](https://github.com/diegofilbal) a partir do [código base](https://github.com/isaacfranco/lp1-concordo-base) do professor Isaac Franco Fernandes.
