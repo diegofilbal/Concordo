@@ -9,4 +9,7 @@ class CanalVoz : public Canal{
     private:
         Mensagem ultimaMensagem;
 
+    public:
+        CanalVoz();
+        CanalVoz(std::string const nome) : Canal(nome){};
 };

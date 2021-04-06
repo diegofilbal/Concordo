@@ -2,6 +2,16 @@
 
 #include "../include/canal.hpp"
 
+// Construtor padrão
+Canal::Canal(){
+
+}
+
+// Construtor sobrecarregado
+Canal::Canal(std::string const nome){
+    this->nome = nome;
+}
+
 // Define o nome do canal
 void Canal::setNome(std::string const nome){
     this->nome = nome;
