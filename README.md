@@ -251,7 +251,7 @@ Se existirem dois canais de tipos diferentes com o nome informado, o usuário ta
 Caso o tipo informado seja inválido ou vazio, o seguinte aviso é exibido:
 
     enter-channel bate-papo-among
-    "Dois canais de tipos diferentes com o nome 'bate-papo-among' encontrados."
+    "Dois canais de tipos diferentes com o nome 'bate-papo-among' encontrados!"
     "Tente novamente informando um tipo válido!"
 
 ## Autoria

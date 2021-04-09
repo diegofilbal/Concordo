@@ -59,8 +59,11 @@ std::string Sistema::login(const std::string email, const std::string senha){
         // Define qual usuário está logado no sistema
         usuarioLogadoId = it_usuario->getId();
 
+        // Define que o usuário não está conectado a nenhum canal
+        if(!nomeCanalConectado.empty()) leave_channel();
+
         // Define que o usuário não está conectado a nenhum servidor
-        nomeServidorConectado = "";
+        if(!nomeServidorConectado.empty()) leave_server();
 
         return "Logado como " + it_usuario->getEmail() + "!";
     }
@@ -77,8 +80,11 @@ std::string Sistema::disconnect(){
         // Guarda o retorno da função em uma string
         std::string retorno = "Desconectando usuário " + usuarios[usuarioLogadoId - 1].getEmail();
 
+        // Define que o usuário não está conectado a nenhum canal
+        if(!nomeCanalConectado.empty()) leave_channel();
+
         // Determina que não há usuários conectados a nenhum servidor
-        nomeServidorConectado = "";
+        if(!nomeServidorConectado.empty()) leave_server();
 
         // Determina que não há usuários logados no sistema
         usuarioLogadoId = 0;
@@ -244,11 +250,11 @@ std::string Sistema::remove_server(const std::string nome){
             if(it_servidor->getUsuarioDonoID() == usuarioLogadoId){
 
                 // Se o servidor conectado no momento for o mesmo a ser removido, o usuário é desconectado dele antes da remoção
-                if(it_servidor->getNome() == nomeServidorConectado)
-                    leave_server();
+                if(it_servidor->getNome() == nomeServidorConectado) leave_server();
 
                 // Remove o servidor
                 servidores.erase(it_servidor);
+
                 return "Servidor \'" + nome + "\' removido!";
 
             }else{
@@ -318,6 +324,9 @@ std::string Sistema::enter_server(const std::string nome, const std::string codi
             // Define o servidor conectado no momento
             nomeServidorConectado = it_servidor->getNome();
 
+            // Desconecta os usuário de qualquer canal
+            if(!nomeCanalConectado.empty()) leave_channel();
+
             // Verifica o retorno para saber se o usuário foi inserido ou se já era participante
             if(retorno)
                 return "Entrou no servidor com sucesso!";
@@ -345,6 +354,9 @@ std::string Sistema::leave_server(){
 
         // Variável para guardar a string de retorno da função
         std::string retorno = "Saindo do servidor \'" + nomeServidorConectado + "\'!";
+
+        // Desconecta o usuário do canal
+        if(!nomeCanalConectado.empty()) leave_channel();
 
         // Desconecta o usuário do servidor
         nomeServidorConectado = "";
@@ -578,13 +590,12 @@ std::string Sistema::enter_channel(const std::string nome, const std::string tip
 
             // Verifica se o tipo informado é inválido
             if(tipo != "texto" && tipo != "voz")
-                return "Dois canais de tipos diferentes com o nome \'" + nome + "\' encontrados.\nTente novamente informando um tipo válido!";
+                return "Dois canais de tipos diferentes com o nome \'" + nome + "\' encontrados!\nTente novamente informando um tipo válido!";
 
             // Conecta o usuário ao canal
             nomeCanalConectado = nome;
 
             return "Entrou no canal de " + tipo + " \'" + nome + "\'!";
-            
         }
 
         // Verifica se pelo menos um resultado foi encontrado, seja canal de texto ou de voz
@@ -604,7 +615,30 @@ std::string Sistema::enter_channel(const std::string nome, const std::string tip
 
 // Função do comando "leave-channel"
 std::string Sistema::leave_channel(){
-    return "leave_channel NÃO IMPLEMENTADO";
+
+    // Verifica se há algum usuário logado
+    if(usuarioLogadoId){
+
+        // Verifica se o usuário está conectado a algum servidor
+        if(nomeServidorConectado.empty()){
+            return "Não está conectado a nenhum servidor!";
+        }
+
+        // Verifica se o usuário já não está conectado a nenhum canal no momento
+        if(nomeCanalConectado.empty()){
+            return "Você não está conectado a nenhum canal!";
+        }
+
+        // Variável para guardar a string de retorno da função
+        std::string retorno = "Saindo do canal \'" + nomeCanalConectado + "\'!";
+
+        // Desconecta o usuário do canal
+        nomeCanalConectado = "";
+
+        return retorno;
+    }
+
+    return "Não está conectado!";
 }
 
 // Função do comando "send-message"
