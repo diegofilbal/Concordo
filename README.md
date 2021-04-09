@@ -221,6 +221,7 @@ Para listar todos os canais de texto e de áudio do servidor ao qual o usuário 
     "#canais de texto"
     "bate-papo-among"
     "#canais de voz"
+    "bate-papo-among"
     "the-skeld"
     "mira-hq"
     "polus"
@@ -229,6 +230,29 @@ Se o servidor não tiver nenhum canal cadastrado, o seguinte aviso é exibido:
 
     list-channels
     "Nenhum canal no servidor!"
+
+### Comando _enter-channel_
+
+Para entrar em um canal de audio ou de texto do servidor ao qual o usuário está conectado no momento, digite o comando _enter-channel_ seguido do _nome_ do canal que deseja entrar:
+
+    enter-channel the-skeld
+    "Entrou no canal 'the-skeld'!"
+
+Caso não exista nenhum canal com o nome informado, a seguinte mensagem é exibida:
+
+    enter-channel outro
+    "Canal 'outro' não existe!"
+
+Se existirem dois canais de tipos diferentes com o nome informado, o usuário também deverá especificar o _tipo_ do canal que deseja entrar:
+
+    enter-channel bate-papo-among voz
+    Entrou no canal de voz 'bate-papo-among'!
+
+Caso o tipo informado seja inválido ou vazio, o seguinte aviso é exibido:
+
+    enter-channel bate-papo-among
+    "Dois canais de tipos diferentes com o nome 'bate-papo-among' encontrados."
+    "Tente novamente informando um tipo válido!"
 
 ## Autoria
 

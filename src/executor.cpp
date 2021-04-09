@@ -134,9 +134,10 @@ std::string Executor::processarLinha(std::string linha){
     }
 
     else if (nomeComando == "enter-channel"){
-        std::string nome;
+        std::string nome, tipo;
         buf >> nome;
-        return sistema->enter_channel(nome);
+        buf >> tipo;
+        return sistema->enter_channel(nome, tipo);
     }
 
     else if (nomeComando == "leave-channel"){

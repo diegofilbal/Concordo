@@ -543,8 +543,63 @@ std::string Sistema::create_channel(const std::string nome, const std::string ti
 }
 
 // Função do comando "enter-channel"
-std::string Sistema::enter_channel(const std::string nome){
-    return "enter_channel NÃO IMPLEMENTADO";
+std::string Sistema::enter_channel(const std::string nome, const std::string tipo){
+
+    // Verifica se há algum usuário conectado
+    if(usuarioLogadoId){
+
+        // Verifica se o usuário está conectado a algum servidor
+        if(nomeServidorConectado.empty()) {
+            return "Não está conectado a nenhum servidor!";
+        }
+
+        // Variável que armazena o nome do servidor conectado no momento
+        std::string nome_servidor_temp = nomeServidorConectado;
+
+        // Busca o servidor que o usuário está conectado no momento
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome_servidor_temp](Servidor servidor) {
+            return servidor.getNome() == nome_servidor_temp;
+        });
+
+        // Busca um canal de texto com o mesmo nome no servidor atual
+        std::vector <std::string> c_texto = it_servidor->getCanaisTexto();
+        auto it_texto = std::find_if(c_texto.begin(), c_texto.end(), [nome](std::string nome_canal) {
+            return nome_canal == nome;
+        });
+
+        // Busca um canal de voz com o mesmo nome no servidor atual
+        std::vector <std::string> c_voz = it_servidor->getCanaisVoz();
+        auto it_voz = std::find_if(c_voz.begin(), c_voz.end(), [nome](std::string nome_canal) {
+            return nome_canal == nome;
+        });
+
+        // Verifica se existem dois canais de tipos diferentes com o mesmo nome recebido
+        if(it_texto != c_texto.end() && it_voz != c_voz.end()){
+
+            // Verifica se o tipo informado é inválido
+            if(tipo != "texto" && tipo != "voz")
+                return "Dois canais de tipos diferentes com o nome \'" + nome + "\' encontrados.\nTente novamente informando um tipo válido!";
+
+            // Conecta o usuário ao canal
+            nomeCanalConectado = nome;
+
+            return "Entrou no canal de " + tipo + " \'" + nome + "\'!";
+            
+        }
+
+        // Verifica se pelo menos um resultado foi encontrado, seja canal de texto ou de voz
+        if(it_texto != c_texto.end() || it_voz != c_voz.end()) {
+
+            // Conecta o usuário ao(s) canais
+            nomeCanalConectado = nome;
+
+            return "Entrou no canal \'" + nome + "\'!";
+        }
+        
+        return "Canal \'" + nome + "\' não existe!";
+    }
+
+    return "Não está conectado!";
 }
 
 // Função do comando "leave-channel"

@@ -31,7 +31,7 @@ class Sistema{
         std::string list_participants();
         std::string list_channels();
         std::string create_channel(const std::string nome, const std::string tipo);
-        std::string enter_channel(const std::string nome);
+        std::string enter_channel(const std::string nome, const std::string tipo);
         std::string leave_channel();
         std::string send_message(const std::string mensagem);
         std::string list_messages();
