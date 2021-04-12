@@ -12,7 +12,9 @@ class CanalTexto : public Canal{
     private:
         std::vector <Mensagem> mensagens;
 
+    // Métodos da classe
     public:
         CanalTexto();
-        CanalTexto(std::string const nome) : Canal(nome) {};
+        CanalTexto(std::string const nome);
+        virtual void enviaMensagem(const Mensagem mensagem);
 };

@@ -233,7 +233,7 @@ Se o servidor não tiver nenhum canal cadastrado, o seguinte aviso é exibido:
 
 ### Comando _enter-channel_
 
-Para entrar em um canal de audio ou de texto do servidor ao qual o usuário está conectado no momento, digite o comando _enter-channel_ seguido do _nome_ do canal que deseja entrar:
+Para entrar em um canal de audio ou de texto do servidor ao qual o usuário está conectado no momento, use o comando _enter-channel_ seguido do _nome_ do canal que deseja entrar:
 
     enter-channel the-skeld
     "Entrou no canal 'the-skeld'!"
@@ -253,6 +253,31 @@ Caso o tipo informado seja inválido ou vazio, o seguinte aviso é exibido:
     enter-channel bate-papo-among
     "Dois canais de tipos diferentes com o nome 'bate-papo-among' encontrados!"
     "Tente novamente informando um tipo válido!"
+
+### Comando _send-message_
+
+Para mandar uma mensagem no canal ao qual o usuário está conectado no momento - seja ele de voz ou de texto - insira o comando _send-message_ seguido da _mensagem_ que deseja enviar:
+
+    send-message ciano impostor entrou vent
+    "Mensagem enviada!"
+
+Se o usuário não estiver conectado a nenhum canal, a seguinte mensagem é exibida:
+    
+    send-message o verde claro me matooou
+    "Não está conectado a nenhum canal!"
+
+Caso a mensagem seja vazia, o seguinte aviso é exibido:
+
+    send-message
+    "Não é possível enviar uma mensagem vazia!"
+
+## Limitações do sistema:
+
+* Devido à forma em que a identificação do canal conectado é feita, definida pelo documento de especificação do trabalho, em canais de mesmo nome e de tipos diferentes, é possível que o envio de mensagens não seja executado no canal correto, pois a operação é realizada no primeiro canal encontrado com o nome inserido pelo usuário.
+
+## Dificuldades de implementação
+
+* Afim de evitar vazamento de memória no armazenamento de canais da classe Servidor, foram utilizados ponteiros inteligentes, mais precisamente o `std::shared_ptr` em vez de ponteiros comuns. Dessa forma, a função `std::dynamic_cast`, que estava sendo utilizada até então com os ponteiros comuns, aprensentou vários erros seguidos sem sucesso de solução. Por fim, o problema foi resolvido utilizando a função `std::dynamic_pointer_cast` para identificar o tipo de canal que o ponteiro faz referência.
 
 ## Autoria
 

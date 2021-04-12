@@ -5,6 +5,7 @@
 
 #include "../include/canal.hpp"
 #include "../include/servidor.hpp"
+#include "../include/mensagem.hpp"
 
 // Construtor padrão
 Servidor::Servidor(){
@@ -59,6 +60,18 @@ bool Servidor::criaCanal(std::shared_ptr <Canal> canal){
         // Retorna código de erro
         return false;
     }
+}
+
+// Envia uma mensagem no canal desejado
+void Servidor::enviaMensagem(const std::string nome_canal, const Mensagem mensagem){
+
+    // Procura o canal com o nome escolhido
+    auto it_canal = std::find_if(canais.begin(), canais.end(), [nome_canal] (std::shared_ptr <Canal> canal) {
+        return canal->getNome() == nome_canal;
+    });
+
+    // Envia a mensagem no primeiro canal encontrado com o nome recebido
+    (*it_canal)->enviaMensagem(mensagem);
 }
 
 // Retorna um vector com o nome dos canais de texto

@@ -14,11 +14,19 @@ bin/mensagem.o: src/mensagem.cpp
 	g++ src/mensagem.cpp -Iinclude -O0 -g -Wall -ansi -pedantic -std=c++11 -c -o bin/mensagem.o
 
 # Compila o arquivo canal.cpp e gera o arquivo objeto canal.o
-bin/canal.o: src/canal.cpp
+bin/canal.o: src/canal.cpp bin/mensagem.o
 	g++ src/canal.cpp -Iinclude -O0 -g -Wall -ansi -pedantic -std=c++11 -c -o bin/canal.o
 
+# Compila o arquivo canal_texto.cpp e gera o arquivo objeto canal_texto.o
+bin/canal_texto.o: src/canal_texto.cpp bin/canal.o
+	g++ src/canal_texto.cpp -Iinclude -O0 -g -Wall -ansi -pedantic -std=c++11 -c -o bin/canal_texto.o
+
+# Compila o arquivo canal_voz.cpp e gera o arquivo objeto canal_voz.o
+bin/canal_voz.o: src/canal_voz.cpp bin/canal.o
+	g++ src/canal_voz.cpp -Iinclude -O0 -g -Wall -ansi -pedantic -std=c++11 -c -o bin/canal_voz.o
+
 # Compila o arquivo servidor.cpp e gera o arquivo objeto servidor.o
-bin/servidor.o: src/servidor.cpp bin/mensagem.o bin/canal.o include/canal_texto.hpp include/canal_voz.hpp
+bin/servidor.o: src/servidor.cpp bin/canal_texto.o bin/canal_voz.o
 	g++ src/servidor.cpp -Iinclude -O0 -g -Wall -ansi -pedantic -std=c++11 -c -o bin/servidor.o
 
 # Compila o arquivo sistema.cpp e gera o arquivo objeto sistema.o

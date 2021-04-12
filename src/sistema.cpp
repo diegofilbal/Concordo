@@ -1,8 +1,9 @@
-#include <iostream>
-#include <sstream>
 #include <algorithm>
+#include <time.h>
+#include <iostream>
 #include <vector>
 
+#include "../include/mensagem.hpp"
 #include "../include/canal.hpp"
 #include "../include/canal_texto.hpp"
 #include "../include/canal_voz.hpp"
@@ -643,7 +644,46 @@ std::string Sistema::leave_channel(){
 
 // Função do comando "send-message"
 std::string Sistema::send_message(const std::string mensagem){
-    return "send_message NÃO IMPLEMENTADO";
+
+    // Verifica se há algum usuário conectado
+    if(usuarioLogadoId){
+
+        // Verifica se o usuário está conectado a algum servidor
+        if(nomeServidorConectado.empty())
+            return "Não está conectado a nenhum servidor!";
+
+        // Verifica se o usuário está conectado a algum canal
+        if(nomeCanalConectado.empty())
+            return "Não está conectado a nenhum canal!";
+
+        // Verifica se a mensagem está vazia
+        if(mensagem.empty()){
+            return "Não é possível enviar uma mensagem vazia!";
+        }
+
+        // Busca o servidor que o usuário está conectado no momento
+        std::string nome_servidor_temp = nomeServidorConectado;
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome_servidor_temp](Servidor servidor) {
+            return servidor.getNome() == nome_servidor_temp;
+        });
+
+        // Captura e armazena a data e hora atual
+        char dataHora[100];
+        time_t s = time(nullptr);
+
+        // Converte a data e hora para string
+        strftime(dataHora, 50, "%d/%m/%Y - %R", localtime(&s));
+
+        // Cria a mensagem a ser enviada
+        Mensagem nova_mensagem(dataHora, usuarioLogadoId, mensagem);
+
+        // Verifica se o envio foi realizada com sucesso
+        it_servidor->enviaMensagem(nomeCanalConectado, nova_mensagem);
+
+        return "Mensagem enviada!";
+    }
+
+    return "Não está conectado";
 }
 
 // Função do comando "list-messages"
