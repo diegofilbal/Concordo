@@ -191,6 +191,8 @@ Se a remoção do servidor for solicitada por algum usuário que não o seu dono
     remove-server gartic
     "Você não é dono do servidor 'gartic'!"
 
+> Caso o usuário estivesse conectado ao servidor removido, a desconexão é feita de forma automática. O mesmo ocorre caso o usário estivesse conectado a algum canal deste servidor.
+
 ### Comando _create-channel_
 
 Para criar um canal no servidor ao qual o usuário está conectado no momento, insira o comando _create-channel_ seguido do _nome_ que deseja atribuir ao novo canal e do seu _tipo_ (texto ou voz):
@@ -258,26 +260,50 @@ Caso o tipo informado seja inválido ou vazio, o seguinte aviso é exibido:
 
 Para mandar uma mensagem no canal ao qual o usuário está conectado no momento - seja ele de voz ou de texto - insira o comando _send-message_ seguido da _mensagem_ que deseja enviar:
 
-    send-message ciano impostor entrou vent
+    send-message tenho scan vem cmg
     "Mensagem enviada!"
 
-Se o usuário não estiver conectado a nenhum canal, a seguinte mensagem é exibida:
-    
-    send-message o verde claro me matooou
-    "Não está conectado a nenhum canal!"
-
-Caso a mensagem seja vazia, o seguinte aviso é exibido:
+Se a mensagem for vazia, a seguinte mensagem é exibida:
 
     send-message
     "Não é possível enviar uma mensagem vazia!"
 
-## Limitações do sistema:
+Caso o usuário não esteja conectado a nenhum canal, o seguinte aviso é exibido:
 
-* Devido à forma em que a identificação do canal conectado é feita, definida pelo documento de especificação do trabalho, em canais de mesmo nome e de tipos diferentes, é possível que o envio de mensagens não seja executado no canal correto, pois a operação é realizada no primeiro canal encontrado com o nome inserido pelo usuário.
+    send-message o ciano me matooou
+    "Não está conectado a nenhum canal!"
+
+> Diferentemente dos canais de texto, nos canais de voz somente a última mensagem enviada é armazenada pelo sistema, conforme as especificações do trabalho.
+
+### Comando _list-messages_
+
+Para listar as mensagens do canal ao qual o usuário está conectado no momento, digite o comando _list-messages_:
+
+    list-messages
+    "Marrom <12/04/2021 - 17:49>: acho que o vermelho tava me seguindo"
+    "Preto <12/04/2021 - 17:49>: ciano mt suspeito"
+    "Ciano <12/04/2021 - 17:50>: eu pq????"
+    "Laranja <12/04/2021 - 17:51>: eh o amarelo ctz"
+    "Laranja <12/04/2021 - 17:51>: se n for pode me tirar na próxima"
+    "Ciano <12/04/2021 - 17:52>: ok"
+
+Se não houver mensagens cadastradas no canal, a seguinte mensagem é exibida:
+
+    list-messages
+    "Sem mensagens para exibir!"
+
+Caso o usuário não esteja conectado a nenhum canal, o seguinte aviso é exibido:
+
+    list-messages
+    "Não está conectado a nenhum canal!"
+
+## Limitações do sistema
+
+- Devido à forma em que a identificação do canal conectado é feita, definida pelo documento de especificações do trabalho, em canais de mesmo nome e de tipos diferentes, é possível que o envio de mensagens não seja executado no canal correto, pois a operação é realizada no primeiro canal encontrado com o nome inserido pelo usuário.
 
 ## Dificuldades de implementação
 
-* Afim de evitar vazamento de memória no armazenamento de canais da classe Servidor, foram utilizados ponteiros inteligentes, mais precisamente o `std::shared_ptr` em vez de ponteiros comuns. Dessa forma, a função `std::dynamic_cast`, que estava sendo utilizada até então com os ponteiros comuns, aprensentou vários erros seguidos sem sucesso de solução. Por fim, o problema foi resolvido utilizando a função `std::dynamic_pointer_cast` para identificar o tipo de canal que o ponteiro faz referência.
+- Afim de evitar vazamento de memória no armazenamento de canais da classe Servidor, foram utilizados ponteiros inteligentes, mais precisamente o `std::shared_ptr`, em vez de ponteiros comuns. Dessa forma, a função `std::dynamic_cast`, que estava sendo utilizada até então com os ponteiros comuns, aprensentou vários erros seguidos sem sucesso de solução. Por fim, o problema foi resolvido utilizando a função `std::dynamic_pointer_cast` para identificar o tipo de canal que o ponteiro faz referência.
 
 ## Autoria
 

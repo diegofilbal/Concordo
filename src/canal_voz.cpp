@@ -23,3 +23,15 @@ void CanalVoz::enviaMensagem(const Mensagem mensagem) {
     ultimaMensagem.setEnviadaPor(mensagem.getEnviadaPor());
     ultimaMensagem.setConteudo(mensagem.getConteudo());
 }
+
+// Retorna um vector de um único elemento contendo a ultima mensagem enviada no canal 
+std::vector <Mensagem> CanalVoz::listaMensagens() const{
+
+    // Cria um vector de mensagens
+    std::vector <Mensagem> retorno;
+
+    // Insere a última mensagem no vector se a mensagem for válida
+    if(!ultimaMensagem.getConteudo().empty()) retorno.push_back(ultimaMensagem);
+
+    return retorno;
+}

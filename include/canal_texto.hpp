@@ -17,4 +17,5 @@ class CanalTexto : public Canal{
         CanalTexto();
         CanalTexto(std::string const nome);
         virtual void enviaMensagem(const Mensagem mensagem);
+        std::vector <Mensagem> listaMensagens() const;
 };

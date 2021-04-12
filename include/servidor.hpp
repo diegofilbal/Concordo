@@ -25,6 +25,7 @@ class Servidor{
         bool adicionaParticipante(int const usuarioID);
         bool criaCanal(std::shared_ptr <Canal> const canal);
         void enviaMensagem(const std::string nome_canal, const Mensagem mensagem);
+        std::vector <Mensagem> listaMensagens(const std::string nome_canal);
 
         std::vector <std::string> getCanaisTexto() const;
         std::vector <std::string> getCanaisVoz() const;

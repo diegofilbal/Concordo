@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "../include/canal.hpp"
 #include "../include/mensagem.hpp"
@@ -16,4 +17,5 @@ class CanalVoz : public Canal{
         CanalVoz();
         CanalVoz(std::string const nome);
         virtual void enviaMensagem(const Mensagem mensagem);
+        virtual std::vector <Mensagem> listaMensagens() const;
 };

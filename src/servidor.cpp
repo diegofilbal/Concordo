@@ -74,6 +74,18 @@ void Servidor::enviaMensagem(const std::string nome_canal, const Mensagem mensag
     (*it_canal)->enviaMensagem(mensagem);
 }
 
+// Retorna um vector de mensagens
+std::vector <Mensagem> Servidor::listaMensagens(const std::string nome_canal){
+
+    // Procura o canal com o nome escolhido
+    auto it_canal = std::find_if(canais.begin(), canais.end(), [nome_canal](std::shared_ptr<Canal> canal) {
+        return canal->getNome() == nome_canal;
+    });
+
+    // Retorna o vector recebido pelo método listaMensagens() da classe canal
+    return (*it_canal)->listaMensagens();
+}
+
 // Retorna um vector com o nome dos canais de texto
 std::vector <std::string> Servidor::getCanaisTexto() const {
 

@@ -541,11 +541,8 @@ std::string Sistema::create_channel(const std::string nome, const std::string ti
             // Cria o canal de voz
             std::shared_ptr <CanalVoz> novo_canal(new CanalVoz(nome));
 
-            // Insere o canal lista de canais do servidor e guarda o retorno do método
-            bool codigo = it_servidor->criaCanal(novo_canal);
-
             // Verifica se a inserção foi realizada com sucesso
-            if(codigo)
+            if(it_servidor->criaCanal(novo_canal))
                 return "Canal de voz \'" + nome + "\' criado!";
             else
                 return "Erro inesperado ao criar canal de voz \'" + nome + "\'!";
@@ -688,5 +685,43 @@ std::string Sistema::send_message(const std::string mensagem){
 
 // Função do comando "list-messages"
 std::string Sistema::list_messages(){
-    return "list_messages NÃO IMPLEMENTADO";
+
+    if(usuarioLogadoId){
+
+        // Verifica se o usuário está conectado a algum servidor
+        if(nomeServidorConectado.empty())
+            return "Não está conectado a nenhum servidor!";
+
+        // Verifica se o usuário está conectado a algum canal
+        if(nomeCanalConectado.empty())
+            return "Não está conectado a nenhum canal!";
+
+        // Busca o servidor que o usuário está conectado no momento
+        std::string nome_servidor_temp = nomeServidorConectado;
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome_servidor_temp](Servidor servidor) {
+            return servidor.getNome() == nome_servidor_temp;
+        });
+
+        // Recebe o vector de retorno da função listaMensagens()
+        std::vector<Mensagem> mensagens = it_servidor->listaMensagens(nomeCanalConectado);
+
+        // Verifica se há mensagens a serem impressas
+        if(mensagens.empty())
+            return "Sem mensagens para exibir!";
+
+        // String de retorno da função com as mensagens do canal
+        std::string retorno;
+
+        // Concatena as mensagens do canal à string de retorno
+        for(auto it_msg = mensagens.begin(); it_msg != mensagens.end(); ++it_msg) {
+            if(it_msg != mensagens.end() - 1)
+                retorno += usuarios[it_msg->getEnviadaPor() - 1].getNome() + " <" + it_msg->getDataHora() + ">: " + it_msg->getConteudo() + "\n";
+            else
+                retorno += usuarios[it_msg->getEnviadaPor() - 1].getNome() + " <" + it_msg->getDataHora() + ">: " + it_msg->getConteudo();
+        }
+
+        return retorno;
+    }
+
+    return "Não está conectado!";
 }
