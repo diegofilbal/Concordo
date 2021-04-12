@@ -53,6 +53,11 @@ O email do usuário deve ser único, caso haja a tentativa de cadastro de outro 
     "Criando usuário Diego Maradona (diego@email.com)"
     "Usuário já existe!"
 
+Todos os dados devem ser informados para a criação do usuário,. Caso isso não ocorra, o seguinte aviso será exibido:
+
+    create-user diego@email.com senha123
+    Informe todos os dados necessários do usuário!
+
 ### Comando _login_
 
 Para conectar algum usuário ao sistema, insira o comando _login_ seguido do _email_ e _senha_ cadastrados anteriormente:

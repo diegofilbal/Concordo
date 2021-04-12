@@ -27,6 +27,10 @@ std::string Sistema::quit(){
 // Função do comando "create-user"
 std::string Sistema::create_user(const std::string email, const std::string senha, const std::string nome){
     
+    // Verifica se o usuário inseriu todos os campos
+    if(nome.empty())
+        return "Informe todos os dados necessários do usuário!";
+
     std::cout << "Criando usuário " << nome << " (" << email << ")" << std::endl;
 
     // Procura algum usuário com o email inserido
