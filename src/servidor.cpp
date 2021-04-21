@@ -63,61 +63,92 @@ bool Servidor::criaCanal(std::shared_ptr <Canal> canal){
 }
 
 // Envia uma mensagem no canal desejado
-void Servidor::enviaMensagem(const std::string nome_canal, const Mensagem mensagem){
+void Servidor::enviaMensagem(const int id, const Mensagem mensagem){
 
-    // Procura o canal com o nome escolhido
-    auto it_canal = std::find_if(canais.begin(), canais.end(), [nome_canal] (std::shared_ptr <Canal> canal) {
-        return canal->getNome() == nome_canal;
+    // Procura o canal com o ID recebido
+    auto it_canal = std::find_if(canais.begin(), canais.end(), [id] (std::shared_ptr <Canal> canal) {
+        return canal->getID() == id;
     });
 
-    // Envia a mensagem no primeiro canal encontrado com o nome recebido
+    // Envia a mensagem no canal
     (*it_canal)->enviaMensagem(mensagem);
 }
 
-// Retorna um vector de mensagens
-std::vector <Mensagem> Servidor::listaMensagens(const std::string nome_canal){
+// Retorna as mensagens do canal desejado
+std::vector <Mensagem> Servidor::listaMensagens(const int id){
 
-    // Procura o canal com o nome escolhido
-    auto it_canal = std::find_if(canais.begin(), canais.end(), [nome_canal](std::shared_ptr<Canal> canal) {
-        return canal->getNome() == nome_canal;
+    // Procura o canal com o ID recebido
+    auto it_canal = std::find_if(canais.begin(), canais.end(), [id](std::shared_ptr<Canal> canal) {
+        return canal->getID() == id;
     });
 
-    // Retorna o vector recebido pelo método listaMensagens() da classe canal
+    // Retorna o vector de mensagens do canal encontrado
     return (*it_canal)->listaMensagens();
 }
 
-// Retorna um vector com o nome dos canais de texto
-std::vector <std::string> Servidor::getCanaisTexto() const {
+// Retorna o número de canais do servidor
+int Servidor::qtdCanais() const{
 
-    // Vector para armazenar o nome dos canais de texto do servidor
-    std::vector <std::string> nomes_texto;
-
-    // Percorre o vector de canais
-    for(auto it_canal = canais.begin(); it_canal != canais.end(); it_canal++){
-
-        // Verifica se o canal atual é do tipo texto para adicioná-lo ao vector a ser retornado
-        if(std::dynamic_pointer_cast <CanalTexto> (*it_canal))
-            nomes_texto.push_back((*it_canal)->getNome());
-    }
-
-    return nomes_texto;
+    // Retorna o tamaho do vector de canais do servidor
+    return canais.size();
 }
 
-// Retorna um vector com o nome dos canais de voz do servidor
-std::vector <std::string> Servidor::getCanaisVoz() const {
+// Retorna um vector com os canais de texto do servidor
+std::vector <CanalTexto> Servidor::getCanaisTexto() const {
 
-    // Variável para armazenar no nome dos canais de texto
-    std::vector <std::string> nomes_voz;
+    // Vector cópia para armazenar os canais de texto do servidor
+    std::vector <CanalTexto> copia;
 
-    // Percorre o vector de canais
-    for(auto it_canal = canais.begin(); it_canal != canais.end(); it_canal++){
-        
-        // Verifica se o canal atual é do tipo voz para adicioná-lo ao vector a ser retornado
-        if(std::dynamic_pointer_cast <CanalVoz> (*it_canal))
-            nomes_voz.push_back((*it_canal)->getNome());
+    // Percorre todos os canais do servidor
+    for(auto it_canal = canais.begin(); it_canal != canais.end(); ++it_canal) {
+
+        // Verifica se o canal atual é do tipo texto
+        if(std::dynamic_pointer_cast <CanalTexto> (*it_canal)){
+
+            // Cria um canal cópia com o mesmo ID e nome do canal de texto atual
+            CanalTexto canal((*it_canal)->getID(), (*it_canal)->getNome());
+
+            // Adiciona o canal cópia ao vector a ser retornado
+            copia.push_back(canal);
+        }
     }
 
-    return nomes_voz;
+    return copia;
+}
+
+// Retorna um vector com os canais de voz do servidor
+std::vector <CanalVoz> Servidor::getCanaisVoz() const {
+    
+    // Vector cópia para armazenar os canais de voz do servidor
+    std::vector <CanalVoz> copia;
+
+    // Percorre todos os canais do servidor
+    for(auto it_canal = canais.begin(); it_canal != canais.end(); ++it_canal) {
+        
+        // Verifica se o canal atual é do tipo voz
+        if(std::dynamic_pointer_cast <CanalVoz> (*it_canal)){
+
+            // Cria um canal cópia com o mesmo ID e nome do canal de voz atual
+            CanalVoz canal((*it_canal)->getID(), (*it_canal)->getNome());
+
+            // Adiciona o canal cópia ao vector a ser retornado
+            copia.push_back(canal);
+        }
+    }
+
+    return copia;
+}
+
+// Retorna o nome do canal de acordo com o ID recebido
+std::string Servidor::getNomeCanal(int const id) const{
+    
+    // Busca o canal com o ID recebido
+    auto it_canal = std::find_if(canais.begin(), canais.end(), [id](std::shared_ptr<Canal> canal){
+        return canal->getID() == id;
+    });
+
+    // Retorna o nome do canal encontrado
+    return (*it_canal)->getNome();
 }
 
 // Retorna o ID do usuário dono do servidor

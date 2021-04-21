@@ -11,7 +11,7 @@ CanalTexto::CanalTexto(){
 }
 
 // Construtor sobrecarregado
-CanalTexto::CanalTexto(std::string const nome) : Canal(nome){
+CanalTexto::CanalTexto(int const id, std::string const nome) : Canal(id, nome){
 
 }
 

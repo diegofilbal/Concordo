@@ -9,6 +9,9 @@ class Canal{
 
     // Atributos da classe
     protected:
+        // Armazena o ID do canal
+        int id;
+        
         // Armazena o nome do canal
         std::string nome;
 
@@ -18,7 +21,7 @@ class Canal{
         Canal();
 
         // Construtor sobrecarregado
-        Canal(std::string const nome);
+        Canal(int const id, std::string const nome);
 
         // Destrutor
         ~Canal();
@@ -28,6 +31,12 @@ class Canal{
 
         // Retorna o vector de mensagens do canal
         virtual std::vector <Mensagem> listaMensagens() const = 0;
+
+        // Define o ID do canal
+        virtual void setID(int const id);
+
+        // Retorna o ID do canal
+        virtual int getID() const;
 
         // Define o nome do canal
         virtual void setNome(std::string const nome);

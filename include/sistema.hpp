@@ -21,8 +21,8 @@ class Sistema{
         // Armazena o nome do servidor conectado
         std::string nomeServidorConectado;
 
-        // Armazena o nome do canal conectado
-        std::string nomeCanalConectado;
+        // Armazena o ID do canal conectado
+        int idCanalConectado;
 
     public:
         // Construtor

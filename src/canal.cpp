@@ -8,13 +8,24 @@ Canal::Canal(){
 }
 
 // Construtor sobrecarregado
-Canal::Canal(std::string const nome){
+Canal::Canal(int const id, std::string const nome) {
+    this->id = id;
     this->nome = nome;
 }
 
 // Destrutor
 Canal::~Canal(){
 
+}
+
+// Define o ID do canal
+void Canal::setID(int const id) {
+    this->id = id;
+}
+
+// Retorna o nome do canal
+int Canal::getID() const {
+    return id;
 }
 
 // Define o nome do canal

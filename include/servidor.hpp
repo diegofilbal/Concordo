@@ -45,16 +45,22 @@ class Servidor{
         bool criaCanal(std::shared_ptr <Canal> const canal);
 
         // Envia uma mensagem no canal desejado
-        void enviaMensagem(const std::string nome_canal, const Mensagem mensagem);
+        void enviaMensagem(const int id, const Mensagem mensagem);
 
         // Retorna um vector de mensagens
-        std::vector <Mensagem> listaMensagens(const std::string nome_canal);
+        std::vector <Mensagem> listaMensagens(const int id);
 
-        // Retorna um vector com o nome dos canais de texto
-        std::vector <std::string> getCanaisTexto() const;
+        // Retorna o número de canais do servidor
+        int qtdCanais() const;
 
-        // Retorna um vector com o nome dos canais de voz do servidor
-        std::vector <std::string> getCanaisVoz() const;
+        // Retorna um vector com os canais de texto do servidor
+        std::vector <CanalTexto> getCanaisTexto() const;
+
+        // Retorna um vector com os canais de voz do servidor
+        std::vector <CanalVoz> getCanaisVoz() const;
+
+        // Retorna o nome do canal de acordo com o ID recebido
+        std::string getNomeCanal(int const id) const;
 
         // Retorna o ID do usuário dono do servidor
         int getUsuarioDonoID() const;

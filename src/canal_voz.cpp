@@ -11,8 +11,8 @@ CanalVoz::CanalVoz() {
 }
 
 // Construtor sobrecarregado
-CanalVoz::CanalVoz(std::string const nome) : Canal(nome) {
-
+CanalVoz::CanalVoz(int const id, std::string const nome) : Canal(id, nome) {
+    
 }
 
 // Envia uma mensagem no canal de voz

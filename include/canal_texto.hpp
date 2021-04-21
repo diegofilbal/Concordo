@@ -19,7 +19,7 @@ class CanalTexto : public Canal{
         CanalTexto();
 
         // Construtor sobrecarregado
-        CanalTexto(std::string const nome);
+        CanalTexto(int const id, std::string const nome);
 
         // Envia uma mensagem no canal de texto
         virtual void enviaMensagem(const Mensagem mensagem);

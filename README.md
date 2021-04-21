@@ -304,7 +304,9 @@ Caso o usuário não esteja conectado a nenhum canal, o seguinte aviso é exibid
 
 ## Limitações do sistema
 
-- Devido à forma em que a identificação do canal conectado é feita, definida pelo documento de especificações do trabalho, em canais de mesmo nome e de tipos diferentes, é possível que o envio de mensagens não seja executado no canal correto, pois a operação é realizada no primeiro canal encontrado com o nome inserido pelo usuário.
+- ~~Devido à forma em que a identificação do canal conectado é feita na classe Sistema, definida pelo documento de especificações do trabalho, em canais de mesmo nome e de tipos diferentes é possível que o envio e listagem de mensagens não seja executado no canal correto, pois a operação é realizada no primeiro canal encontrado com o nome inserido pelo usuário.~~
+
+> A limitação foi resolvida adicionando o atributo ID aos canais para identificá-los de forma única dentro do servidor.
 
 ## Dificuldades de implementação
 

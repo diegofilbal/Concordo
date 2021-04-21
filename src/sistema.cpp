@@ -16,7 +16,7 @@ Sistema::Sistema(){
     // Inicializa os atributos
     usuarioLogadoId = 0;
     nomeServidorConectado = "";
-    nomeCanalConectado = "";
+    idCanalConectado = 0;
 }
 
 // Função do comando "quit"
@@ -65,7 +65,7 @@ std::string Sistema::login(const std::string email, const std::string senha){
         usuarioLogadoId = it_usuario->getId();
 
         // Define que o usuário não está conectado a nenhum canal
-        if(!nomeCanalConectado.empty()) leave_channel();
+        if(idCanalConectado) leave_channel();
 
         // Define que o usuário não está conectado a nenhum servidor
         if(!nomeServidorConectado.empty()) leave_server();
@@ -86,7 +86,7 @@ std::string Sistema::disconnect(){
         std::string retorno = "Desconectando usuário " + usuarios[usuarioLogadoId - 1].getEmail();
 
         // Define que o usuário não está conectado a nenhum canal
-        if(!nomeCanalConectado.empty()) leave_channel();
+        if(idCanalConectado) leave_channel();
 
         // Determina que não há usuários conectados a nenhum servidor
         if(!nomeServidorConectado.empty()) leave_server();
@@ -330,7 +330,7 @@ std::string Sistema::enter_server(const std::string nome, const std::string codi
             nomeServidorConectado = it_servidor->getNome();
 
             // Desconecta os usuário de qualquer canal
-            if(!nomeCanalConectado.empty()) leave_channel();
+            if(idCanalConectado) leave_channel();
 
             // Verifica o retorno para saber se o usuário foi inserido ou se já era participante
             if(retorno)
@@ -361,7 +361,7 @@ std::string Sistema::leave_server(){
         std::string retorno = "Saindo do servidor \'" + nomeServidorConectado + "\'!";
 
         // Desconecta o usuário do canal
-        if(!nomeCanalConectado.empty()) leave_channel();
+        if(idCanalConectado) leave_channel();
 
         // Desconecta o usuário do servidor
         nomeServidorConectado = "";
@@ -431,12 +431,12 @@ std::string Sistema::list_channels(){
         });
 
         // Recebe a lista de canais de texto do servidor atual
-        std::vector <std::string> c_texto = it_servidor->getCanaisTexto();
+        std::vector <CanalTexto> c_texto = it_servidor->getCanaisTexto();
 
         // Recebe a lista de canais de voz do servidor atual
-        std::vector <std::string> c_voz = it_servidor->getCanaisVoz();
+        std::vector <CanalVoz> c_voz = it_servidor->getCanaisVoz();
 
-        // Verifica se não há nenhum canal cadastrado
+        // Verifica se não há nenhum canal cadastrado no servidor
         if(c_texto.empty() && c_voz.empty()){
             return "Nenhum canal no servidor!";
         }
@@ -449,11 +449,11 @@ std::string Sistema::list_channels(){
             retorno += "#canais de texto\n";
 
             // Concatena o nome dos canais de texto à string de retorno
-            for(auto it_str = c_texto.begin(); it_str != c_texto.end(); ++it_str){
-                if(it_str != c_texto.end() - 1)
-                    retorno += *it_str + "\n";
+            for(auto it_canal = c_texto.begin(); it_canal != c_texto.end(); ++it_canal) {
+                if(it_canal != c_texto.end() - 1)
+                    retorno += it_canal->getNome() + "\n";
                 else
-                    retorno += *it_str;
+                    retorno += it_canal->getNome();
             }
         }
 
@@ -465,11 +465,11 @@ std::string Sistema::list_channels(){
             retorno += "#canais de voz\n";
 
             // Concatena o nome dos canais de voz à string de retorno
-            for(auto it_str = c_voz.begin(); it_str != c_voz.end(); ++it_str){
-                if(it_str != c_voz.end() - 1)
-                    retorno += *it_str + "\n";
+            for(auto it_canal = c_voz.begin(); it_canal != c_voz.end(); ++it_canal){
+                if(it_canal != c_voz.end() - 1)
+                    retorno += it_canal->getNome() + "\n";
                 else
-                    retorno += *it_str;
+                    retorno += it_canal->getNome();
             }
         }
 
@@ -505,25 +505,22 @@ std::string Sistema::create_channel(const std::string nome, const std::string ti
         if(tipo == "texto"){
 
             // Recebe a lista de canais de texto do servidor atual
-            std::vector <std::string> c_texto = it_servidor->getCanaisTexto();
+            std::vector <CanalTexto> c_texto = it_servidor->getCanaisTexto();
 
             // Busca um canal com o mesmo nome
-            auto it_str = std::find_if(c_texto.begin(), c_texto.end(), [nome](std::string nome_canal) {
-                return nome_canal == nome;
+            auto it_canal = std::find_if(c_texto.begin(), c_texto.end(), [nome](CanalTexto canal) {
+                return canal.getNome() == nome;
             });
 
             // Verifica se a busca achou um canal com o mesmo nome
-            if(it_str != c_texto.end())
+            if(it_canal != c_texto.end())
                 return "Canal de texto \'" + nome + "\' já existe!";
             
             // Cria o canal de texto
-            std::shared_ptr <CanalTexto> novo_canal(new CanalTexto(nome));
-
-            // Insere o canal lista de canais do servidor e guarda o retorno do método
-            bool codigo = it_servidor->criaCanal(novo_canal);
+            std::shared_ptr <CanalTexto> novo_canal(new CanalTexto(it_servidor->qtdCanais() + 1, nome));
 
             // Verifica se a inserção foi realizada com sucesso
-            if(codigo)
+            if(it_servidor->criaCanal(novo_canal))
                 return "Canal de texto \'" + nome + "\' criado!";
             else
                 return "Erro inesperado ao criar canal de texto \'" + nome + "\'!";
@@ -531,19 +528,19 @@ std::string Sistema::create_channel(const std::string nome, const std::string ti
         }else{
 
             // Recebe a lista de canais de voz do servidor atual
-            std::vector <std::string> c_voz = it_servidor->getCanaisVoz();
+            std::vector <CanalVoz> c_voz = it_servidor->getCanaisVoz();
 
             // Busca um canal com o mesmo nome
-            auto it_str = std::find_if(c_voz.begin(), c_voz.end(), [nome](std::string nome_canal) {
-                return nome_canal == nome;
+            auto it_canal = std::find_if(c_voz.begin(), c_voz.end(), [nome](CanalVoz canal) {
+                return canal.getNome() == nome;
             });
 
             // Verifica se a busca achou um canal com o mesmo nome
-            if(it_str != c_voz.end())
+            if(it_canal != c_voz.end())
                 return "Canal de voz \'" + nome + "\' já existe!";
 
             // Cria o canal de voz
-            std::shared_ptr <CanalVoz> novo_canal(new CanalVoz(nome));
+            std::shared_ptr <CanalVoz> novo_canal(new CanalVoz(it_servidor->qtdCanais() + 1, nome));
 
             // Verifica se a inserção foi realizada com sucesso
             if(it_servidor->criaCanal(novo_canal))
@@ -576,16 +573,20 @@ std::string Sistema::enter_channel(const std::string nome, const std::string tip
         });
 
         // Busca um canal de texto com o mesmo nome no servidor atual
-        std::vector <std::string> c_texto = it_servidor->getCanaisTexto();
-        auto it_texto = std::find_if(c_texto.begin(), c_texto.end(), [nome](std::string nome_canal) {
-            return nome_canal == nome;
+        std::vector <CanalTexto> c_texto = it_servidor->getCanaisTexto();
+        auto it_texto = std::find_if(c_texto.begin(), c_texto.end(), [nome](CanalTexto canal) {
+            return canal.getNome() == nome;
         });
 
         // Busca um canal de voz com o mesmo nome no servidor atual
-        std::vector <std::string> c_voz = it_servidor->getCanaisVoz();
-        auto it_voz = std::find_if(c_voz.begin(), c_voz.end(), [nome](std::string nome_canal) {
-            return nome_canal == nome;
+        std::vector <CanalVoz> c_voz = it_servidor->getCanaisVoz();
+        auto it_voz = std::find_if(c_voz.begin(), c_voz.end(), [nome](CanalVoz canal) {
+            return canal.getNome() == nome;
         });
+
+        // Verifica se algum canal com o nome recebido foi encontrado
+        if(it_texto == c_texto.end() && it_voz == c_voz.end())
+            return "Canal \'" + nome + "\' não existe!";
 
         // Verifica se existem dois canais de tipos diferentes com o mesmo nome recebido
         if(it_texto != c_texto.end() && it_voz != c_voz.end()){
@@ -594,22 +595,26 @@ std::string Sistema::enter_channel(const std::string nome, const std::string tip
             if(tipo != "texto" && tipo != "voz")
                 return "Dois canais de tipos diferentes com o nome \'" + nome + "\' encontrados!\nTente novamente informando um tipo válido!";
 
-            // Conecta o usuário ao canal
-            nomeCanalConectado = nome;
+            // Conecta o usuário ao canal de texto
+            if(tipo == "texto")
+                idCanalConectado = it_texto->getID();
+
+            // Conecta o usuário ao canal de voz
+            if(tipo == "voz")
+                idCanalConectado = it_voz->getID();
 
             return "Entrou no canal de " + tipo + " \'" + nome + "\'!";
         }
 
-        // Verifica se pelo menos um resultado foi encontrado, seja canal de texto ou de voz
-        if(it_texto != c_texto.end() || it_voz != c_voz.end()) {
+        // Conecta o usuário ao canal de texto
+        if(it_texto != c_texto.end())
+            idCanalConectado = it_texto->getID();
 
-            // Conecta o usuário ao(s) canais
-            nomeCanalConectado = nome;
+        // Conecta o usuário ao canal de voz
+        if(it_voz != c_voz.end()) 
+            idCanalConectado = it_voz->getID();
 
-            return "Entrou no canal \'" + nome + "\'!";
-        }
-        
-        return "Canal \'" + nome + "\' não existe!";
+        return "Entrou no canal \'" + nome + "\'!";
     }
 
     return "Não está conectado!";
@@ -627,15 +632,22 @@ std::string Sistema::leave_channel(){
         }
 
         // Verifica se o usuário já não está conectado a nenhum canal no momento
-        if(nomeCanalConectado.empty()){
+        if(!idCanalConectado)
             return "Você não está conectado a nenhum canal!";
-        }
 
+        // Variável que armazena o nome do servidor conectado no momento
+        std::string nome_servidor_temp = nomeServidorConectado;
+
+        // Busca o servidor que o usuário está conectado no momento
+        auto it_servidor = std::find_if(servidores.begin(), servidores.end(), [nome_servidor_temp](Servidor servidor) {
+            return servidor.getNome() == nome_servidor_temp;
+        });
+    
         // Variável para guardar a string de retorno da função
-        std::string retorno = "Saindo do canal \'" + nomeCanalConectado + "\'!";
+        std::string retorno = "Saindo do canal \'" + it_servidor->getNomeCanal(idCanalConectado) + "\'!";
 
         // Desconecta o usuário do canal
-        nomeCanalConectado = "";
+        idCanalConectado = 0;
 
         return retorno;
     }
@@ -654,7 +666,7 @@ std::string Sistema::send_message(const std::string mensagem){
             return "Não está conectado a nenhum servidor!";
 
         // Verifica se o usuário está conectado a algum canal
-        if(nomeCanalConectado.empty())
+        if(!idCanalConectado)
             return "Não está conectado a nenhum canal!";
 
         // Verifica se a mensagem está vazia
@@ -678,8 +690,8 @@ std::string Sistema::send_message(const std::string mensagem){
         // Cria a mensagem a ser enviada
         Mensagem nova_mensagem(dataHora, usuarioLogadoId, mensagem);
 
-        // Verifica se o envio foi realizada com sucesso
-        it_servidor->enviaMensagem(nomeCanalConectado, nova_mensagem);
+        // Envia a mensagem no canal
+        it_servidor->enviaMensagem(idCanalConectado, nova_mensagem);
 
         return "Mensagem enviada!";
     }
@@ -697,7 +709,7 @@ std::string Sistema::list_messages(){
             return "Não está conectado a nenhum servidor!";
 
         // Verifica se o usuário está conectado a algum canal
-        if(nomeCanalConectado.empty())
+        if(!idCanalConectado)
             return "Não está conectado a nenhum canal!";
 
         // Busca o servidor que o usuário está conectado no momento
@@ -707,7 +719,7 @@ std::string Sistema::list_messages(){
         });
 
         // Recebe o vector de retorno da função listaMensagens()
-        std::vector<Mensagem> mensagens = it_servidor->listaMensagens(nomeCanalConectado);
+        std::vector <Mensagem> mensagens = it_servidor->listaMensagens(idCanalConectado);
 
         // Verifica se há mensagens a serem impressas
         if(mensagens.empty())
