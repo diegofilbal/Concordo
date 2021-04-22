@@ -10,7 +10,7 @@
 
 class Servidor{
 
-    // Atributos da classe
+    // Atributos e métodos privados da classe
     private:
         // Armazena o ID do usuário dono
         int usuarioDonoID;
@@ -30,7 +30,7 @@ class Servidor{
         // Armazena os IDs dos usuários membros do servidor
         std::vector <int> participantesIDs;
 
-    // Métodos da classe
+    // Métodos públicos da classe
     public:
         // Construtor
         Servidor();
@@ -48,10 +48,13 @@ class Servidor{
         void enviaMensagem(const int id, const Mensagem mensagem);
 
         // Retorna um vector de mensagens
-        std::vector <Mensagem> listaMensagens(const int id);
+        std::vector <Mensagem> listaMensagens(const int id) const;
 
         // Retorna o número de canais do servidor
         int qtdCanais() const;
+
+        // Retorna um vector de ponteiros de todos os canais do servidor
+        std::vector <std::shared_ptr <Canal>> getCanais() const;
 
         // Retorna um vector com os canais de texto do servidor
         std::vector <CanalTexto> getCanaisTexto() const;

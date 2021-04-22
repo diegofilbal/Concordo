@@ -75,7 +75,7 @@ void Servidor::enviaMensagem(const int id, const Mensagem mensagem){
 }
 
 // Retorna as mensagens do canal desejado
-std::vector <Mensagem> Servidor::listaMensagens(const int id){
+std::vector <Mensagem> Servidor::listaMensagens(const int id) const{
 
     // Procura o canal com o ID recebido
     auto it_canal = std::find_if(canais.begin(), canais.end(), [id](std::shared_ptr<Canal> canal) {
@@ -93,8 +93,15 @@ int Servidor::qtdCanais() const{
     return canais.size();
 }
 
+// Retorna um vector de ponteiros de todos os canais do servidor
+std::vector <std::shared_ptr <Canal>> Servidor::getCanais() const {
+
+    // Retorna o atributo canais
+    return canais;
+}
+
 // Retorna um vector com os canais de texto do servidor
-std::vector <CanalTexto> Servidor::getCanaisTexto() const {
+std::vector<CanalTexto> Servidor::getCanaisTexto() const {
 
     // Vector cópia para armazenar os canais de texto do servidor
     std::vector <CanalTexto> copia;
