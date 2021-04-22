@@ -33,7 +33,7 @@ remove-server servidor-ruim
 login isaacfranco@imd.ufrn.br senhalegal
 remove-server servidor-ruim
 create-server servidor-bacana
-create-server servidor-fuderoso
+create-server servidor-daora
 list-servers
 enter-server servidor-bacana
 leave-server servidor-bacana
@@ -50,5 +50,58 @@ enter-server servidor-sinistro
 login isaacfranco@imd.ufrn.br senhalegal
 enter-server servidor-sinistro
 list-participants
+create-channel canal1
+create-channel canal1 texto
+create-channel canal1 texto
+create-channel canal2 texto
+create-channel canal1 voz
+create-channel canal3 voz
+list-channels
+enter-channel canal-inexistente
+enter-channel canal3
+list-messages
+leave-server
+enter-channel canal1
+enter-server servidor-sinistro
+enter-channel canal1
+enter-channel canal1 tipo
+leave-channel
+list-messages
+enter-channel canal1 texto
+list-messages
+send-message esse servidor é muito sinistro
+login renan@imd.ufrn.br senha
+enter-server servidor-sinistro
+enter-channel canal1 texto
+list-messages
+send-message verdade...
+list-messages
+enter-channel canal1 voz
+send-message alguém aí?
+list-messages
+leave-channel
+leave-channel
+login julio@imd.ufrn.br senha
+enter-server servidor-sinistro
+enter-channel canal1 voz
+list-messages
+send-message estou aqui
+list-messages
+login isaacfranco@imd.ufrn.br senhalegal
+enter-server servidor-sinistro
+enter-channel canal1 voz
+list-messages
+login julio@imd.ufrn.br senha
+leave-channel
+enter-channel canal1 voz
+enter-server servidor-sinistro
+enter-channel canal1 voz
+list-messages
+enter-channel canal3
+list-messages
+send-message oi pessoal
+list-messages
+list-servers
+create-user email@email.com senha123 Nome do usuário
 quit
 create-user naodeveprocessar@imd.ufrn.br naodevechegaraqui Não deve chegar aqui
