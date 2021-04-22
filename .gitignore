@@ -6,3 +6,6 @@ concordo
 
 # Pasta de configurações do vscode
 .vscode/*
+
+# Pasta de arquivos de persistência de dados
+database/*
