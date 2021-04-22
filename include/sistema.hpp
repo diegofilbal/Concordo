@@ -24,9 +24,18 @@ class Sistema{
         // Armazena o ID do canal conectado
         int idCanalConectado;
 
-    public:
+        // Salva os dados dos usuários cadastrados
+        void salvarUsuarios() const;
+
+        // Salva os dados dos servidores cadastrados
+        void salvarServidores() const;
+
+       public:
         // Construtor
         Sistema();
+        
+        // Salva todos os dados do sistema
+        void salvar() const;
 
         // Função do comando "quit"
         std::string quit();

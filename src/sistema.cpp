@@ -1,6 +1,7 @@
 #include <algorithm>
-#include <time.h>
+#include <fstream>
 #include <iostream>
+#include <time.h>
 #include <vector>
 
 #include "../include/mensagem.hpp"
@@ -19,8 +20,96 @@ Sistema::Sistema(){
     idCanalConectado = 0;
 }
 
+// Salva todos os dados do sistema
+void Sistema::salvar() const{
+    salvarUsuarios();
+    salvarServidores();
+}
+
+// Salva os dados dos usuários cadastrados 
+void Sistema::salvarUsuarios() const{
+
+    // Abre o arquivo a ser usado para armazenar os dados
+    std::ofstream os_usuarios("database/usuarios.txt");
+
+    // Verifica se a abertura foi bem sucedida
+    if(os_usuarios.is_open()) {
+
+        // Imprime a quantidade de usuarios cadastrados
+        os_usuarios << usuarios.size() << std::endl;
+
+        // Imprime as credenciais de cada usuário do sistema
+        for(auto it_usuario = usuarios.begin(); it_usuario != usuarios.end(); ++it_usuario) {
+            os_usuarios << it_usuario->getId() << std::endl;
+            os_usuarios << it_usuario->getNome() << std::endl;
+            os_usuarios << it_usuario->getEmail() << std::endl;
+            os_usuarios << it_usuario->getSenha() << std::endl;
+        }
+
+    }else
+        std::cerr << "Erro ao salvar usuários! " << std::endl;
+    
+    os_usuarios.close();
+}
+
+// Salva os dados dos servidores cadastrados
+void Sistema::salvarServidores() const{
+
+    // Abre o arquivo a ser usado para armazenar os dados
+    std::ofstream os_servidores("database/servidores.txt");
+
+    // Verifica se a abertura foi bem sucedida
+    if(os_servidores.is_open()) {
+
+        // Imprime a quantidade de servidores cadastrados
+        os_servidores << servidores.size() << std::endl;
+
+        // Imprime os dados de cada servidor do sistema
+        for(auto it_servidor = servidores.begin(); it_servidor != servidores.end(); ++it_servidor) {
+            
+            // Dados dos servidores
+            os_servidores << it_servidor->getUsuarioDonoID() << std::endl;
+            os_servidores << it_servidor->getNome() << std::endl;
+            os_servidores << it_servidor->getDescricao() << std::endl;
+            os_servidores << it_servidor->getCodigoConvite() << std::endl;
+
+            // Dados dos membros dos servidores
+            std::vector <int> partIDs = it_servidor->getParticipantesIDs();
+            os_servidores << partIDs.size() << std::endl;
+            for(auto it_p = partIDs.begin(); it_p != partIDs.end(); ++it_p)
+                os_servidores << *it_p << std::endl;
+
+            // Dados dos canais dos servidores
+            std::vector <std::shared_ptr <Canal>> v_canais = it_servidor->getCanais();
+            os_servidores << v_canais.size() << std::endl;
+            for(auto it_c = v_canais.begin(); it_c != v_canais.end(); ++it_c) {
+                os_servidores << (*it_c)->getID() << std::endl;
+                os_servidores << (*it_c)->getNome() << std::endl;
+                if(std::dynamic_pointer_cast <CanalTexto> (*it_c))
+                    os_servidores << "TEXTO" << std::endl;
+                if(std::dynamic_pointer_cast <CanalVoz> (*it_c))
+                    os_servidores << "VOZ" << std::endl;
+
+                // Dados das mensagens dos canais
+                std::vector<Mensagem> me = (*it_c)->listaMensagens();
+                os_servidores << me.size() << std::endl;
+                for(auto it_m = me.begin(); it_m != me.end(); ++it_m) {
+                    os_servidores << it_m->getEnviadaPor() << std::endl;
+                    os_servidores << it_m->getDataHora() << std::endl;
+                    os_servidores << it_m->getConteudo() << std::endl;
+                }
+            }
+        }
+
+    }else
+        std::cerr << "Erro ao salvar servidores!" << std::endl;
+
+    os_servidores.close();
+}
+
 // Função do comando "quit"
 std::string Sistema::quit(){
+    salvar();
     return "Saindo do Concordo...";
 }
 
@@ -46,6 +135,9 @@ std::string Sistema::create_user(const std::string email, const std::string senh
     // Cria o novo usuário e insere no vector
     Usuario novo_usuario((int) (usuarios.size() + 1), email, senha, nome);
     usuarios.push_back(novo_usuario);
+
+    // Salva os dados no arquivo
+    salvar();
 
     return "Usuário criado!";
 }
@@ -130,6 +222,9 @@ std::string Sistema::create_server(const std::string nome){
         // Insere o novo servidor no vector de servidores
         servidores.push_back(novo_servidor);
 
+        // Salva os dados no arquivo
+        salvar();
+
         return "Servidor criado!";
     }
 
@@ -155,7 +250,10 @@ std::string Sistema::set_server_desc(const std::string nome, const std::string d
 
                 // Altera a descrição do servidor
                 it_servidor->setDescricao(descricao);
-                
+
+                // Salva os dados no arquivo
+                salvar();
+
                 return "Descrição do servidor \'" + nome + "\' modificada!";
 
             }else{
@@ -189,6 +287,9 @@ std::string Sistema::set_server_invite_code(const std::string nome, const std::s
 
                 // Atualiza o código de convite do servidor
                 it_servidor->setCodigoConvite(codigo);
+
+                // Salva os dados no arquivo
+                salvar();
 
                 // Verifica se o código inserido era vazio
                 if(codigo.empty()){
@@ -259,6 +360,9 @@ std::string Sistema::remove_server(const std::string nome){
 
                 // Remove o servidor
                 servidores.erase(it_servidor);
+
+                // Salva os dados no arquivo
+                salvar();
 
                 return "Servidor \'" + nome + "\' removido!";
 
@@ -331,6 +435,9 @@ std::string Sistema::enter_server(const std::string nome, const std::string codi
 
             // Desconecta os usuário de qualquer canal
             if(idCanalConectado) leave_channel();
+
+            // Salva os dados no arquivo
+            salvar();
 
             // Verifica o retorno para saber se o usuário foi inserido ou se já era participante
             if(retorno)
@@ -520,9 +627,12 @@ std::string Sistema::create_channel(const std::string nome, const std::string ti
             std::shared_ptr <CanalTexto> novo_canal(new CanalTexto(it_servidor->qtdCanais() + 1, nome));
 
             // Verifica se a inserção foi realizada com sucesso
-            if(it_servidor->criaCanal(novo_canal))
+            if(it_servidor->criaCanal(novo_canal)){
+                // Salva os dados no arquivo
+                salvar();
+
                 return "Canal de texto \'" + nome + "\' criado!";
-            else
+            }else
                 return "Erro inesperado ao criar canal de texto \'" + nome + "\'!";
         
         }else{
@@ -543,9 +653,12 @@ std::string Sistema::create_channel(const std::string nome, const std::string ti
             std::shared_ptr <CanalVoz> novo_canal(new CanalVoz(it_servidor->qtdCanais() + 1, nome));
 
             // Verifica se a inserção foi realizada com sucesso
-            if(it_servidor->criaCanal(novo_canal))
+            if(it_servidor->criaCanal(novo_canal)){
+                // Salva os dados no arquivo
+                salvar();
+
                 return "Canal de voz \'" + nome + "\' criado!";
-            else
+            }else
                 return "Erro inesperado ao criar canal de voz \'" + nome + "\'!";
         }
     }
@@ -692,6 +805,9 @@ std::string Sistema::send_message(const std::string mensagem){
 
         // Envia a mensagem no canal
         it_servidor->enviaMensagem(idCanalConectado, nova_mensagem);
+
+        // Salva os dados no arquivo
+        salvar();
 
         return "Mensagem enviada!";
     }
