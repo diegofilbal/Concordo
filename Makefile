@@ -1,8 +1,14 @@
 # Compila todos os arquivos e gera o executável
-all: create_dir concordo
+all: set_database create_bin_dir concordo
+
+# Cria pasta para armazenar os arquivos de dados
+set_database:
+	mkdir -p database
+	touch database/usuarios.txt
+	touch database/servidores.txt
 
 # Cria pasta para armazenar os arquivos objetos
-create_dir:
+create_bin_dir:
 	mkdir -p bin
 
 # Compila o arquivo usuario.cpp e gera o arquivo objeto usuario.o
@@ -55,3 +61,7 @@ run_script: all
 # Apaga a pasta de arquivos objetos e o executável
 clean:
 	rm -rf bin concordo
+
+# Apaga todos os dados do sistema salvos nos arquivos
+reset:
+	rm -rf database

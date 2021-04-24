@@ -30,12 +30,21 @@ class Sistema{
         // Salva os dados dos servidores cadastrados
         void salvarServidores() const;
 
+        // Restaura os dados de usuários previamente cadastrados
+        void carregarUsuarios();
+
+        // Restaura os dados de servidores previamente cadastrados
+        void carregarServidores();
+
        public:
         // Construtor
         Sistema();
         
         // Salva todos os dados do sistema
         void salvar() const;
+
+        // Restaura todos os dados previamente cadastrados
+        void carregar();
 
         // Função do comando "quit"
         std::string quit();

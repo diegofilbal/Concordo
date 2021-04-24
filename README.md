@@ -24,6 +24,10 @@ Também é possível apagar o arquivo executável e a pasta de arquivos objeto c
 
     $ make clean
 
+Para apagar os arquivos de restauração de dados, isto é, resetar todo o estado salvo do sistema, digite:
+
+    $ make reset
+
 ## Como usar o sistema
 
 A utilização do programa é feita a partir de comandos. A listagem dos comandos disponíveis e uma breve explicação de suas funcionalidades com exemplos está disposta abaixo.
@@ -302,15 +306,56 @@ Caso o usuário não esteja conectado a nenhum canal, o seguinte aviso é exibid
     list-messages
     "Não está conectado a nenhum canal!"
 
+## Persistência de dados
+
+A persistência de dados deste projeto foi realizada usando manipulação de arquivos com o propósito de manter salvo em disco os dados relativos a usuários, servidores, canais e mensagens, além de servir para restaurar o estado mais recente do sistema a cada inicialização.
+
+### Dados dos usuários
+
+Para armazenar os dados de restauração dos usuários, será criado um arquivo `usuarios.txt` estruturado da seguinte maneira:
+
+- A primeira linha contém um inteiro com o total de usuários;
+- Em seguida, para cada usuário, teremos:
+    - Uma linha com o ID do usuário;
+    - Uma linha com o nome do usuário;
+    - Uma linha com o email do usuário;
+    - Uma linha com a senha do usuário.
+
+### Dados dos servidores
+
+Para armazenar os dados de restauração dos servidores, será gerado um arquivo `servidores.txt` com a seguinte estrutura:
+
+- A primeira linha contém um inteiro com o total de servidores do sistema;
+- Em seguida, para cada servidor, teremos:
+    - Uma linha com o ID do usuário dono do servidor;
+    - Uma linha com o nome do servidor;
+    - Uma linha com a descrição do servidor (se não existir, será uma linha vazia);
+    - Uma linha com o código de convite do servidor (se for aberto, será uma linha vazia);
+    - Uma linha com um inteiro informando o número de usuários participantes do servidor;
+    - Para cada usuário participante do servidor:
+        - Uma linha com o ID do usuário participante;
+    - Uma linha com um inteiro informando o número de canais do servidor;
+    - Para cada canal no servidor:
+        - Uma linha com o ID do canal;
+        - Uma linha com o nome do canal;
+        - Uma linha com o tipo do canal: "TEXTO" ou "VOZ";
+        - Uma linha com um inteiro com o número de mensagens do canal;
+        - Para cada mensagem no canal:
+            - Uma linha com o ID do usuário remetente;
+            - Uma linha com a data e hora da mensagem;
+            - Uma linha com o conteúdo da mensagem.
+
 ## Limitações do sistema
 
 - ~~Devido à forma em que a identificação do canal conectado é feita na classe Sistema, definida pelo documento de especificações do trabalho, em canais de mesmo nome e de tipos diferentes é possível que o envio e listagem de mensagens não seja executado no canal correto, pois a operação é realizada no primeiro canal encontrado com o nome inserido pelo usuário.~~
 
-> A limitação foi resolvida adicionando o atributo ID aos canais para identificá-los de forma única dentro do servidor.
+> A limitação foi resolvida adicionando o atributo ID aos canais para identificá-los de forma única dentro do servidor, sem a ambiguidade que poderia ocorrer quando era identificada somente pelo seu nome.
 
 ## Dificuldades de implementação
 
 - Afim de evitar vazamento de memória no armazenamento de canais da classe Servidor, foram utilizados ponteiros inteligentes, mais precisamente o `std::shared_ptr`, em vez de ponteiros comuns. Dessa forma, a função `std::dynamic_cast`, que estava sendo utilizada até então com os ponteiros comuns, aprensentou vários erros seguidos sem sucesso de solução. Por fim, o problema foi resolvido utilizando a função `std::dynamic_pointer_cast` para identificar o tipo de canal que o ponteiro faz referência.
+
+- Para evitar que classes externas a Servidor tivessem poder de escrita sob a lista de canais, foram feitas tentativas de retornar um vector de `std::shared_ptr` constante no método `Servidor::getCanais()`, para que o seu conteúdo não pudesse ser modificado fora de sua classe. Porém surgiram vários indicando que não poderiam haver variáveis do tipo `std::shared_ptr <const Canal>`, portanto a solução encontrada foi retornar o atributo `canais` da classe Servidor diretamente, sem restrição de modificação.
 
 ## Autoria
 

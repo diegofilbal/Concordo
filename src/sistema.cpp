@@ -22,6 +22,7 @@ Sistema::Sistema(){
 
 // Salva todos os dados do sistema
 void Sistema::salvar() const{
+    // Salva usuários e servidores
     salvarUsuarios();
     salvarServidores();
 }
@@ -33,7 +34,7 @@ void Sistema::salvarUsuarios() const{
     std::ofstream os_usuarios("database/usuarios.txt");
 
     // Verifica se a abertura foi bem sucedida
-    if(os_usuarios.is_open()) {
+    if(os_usuarios) {
 
         // Imprime a quantidade de usuarios cadastrados
         os_usuarios << usuarios.size() << std::endl;
@@ -56,47 +57,47 @@ void Sistema::salvarUsuarios() const{
 void Sistema::salvarServidores() const{
 
     // Abre o arquivo a ser usado para armazenar os dados
-    std::ofstream os_servidores("database/servidores.txt");
+    std::ofstream ofs_servidores("database/servidores.txt");
 
     // Verifica se a abertura foi bem sucedida
-    if(os_servidores.is_open()) {
+    if(ofs_servidores){
 
         // Imprime a quantidade de servidores cadastrados
-        os_servidores << servidores.size() << std::endl;
+        ofs_servidores << servidores.size() << std::endl;
 
         // Imprime os dados de cada servidor do sistema
         for(auto it_servidor = servidores.begin(); it_servidor != servidores.end(); ++it_servidor) {
             
             // Dados dos servidores
-            os_servidores << it_servidor->getUsuarioDonoID() << std::endl;
-            os_servidores << it_servidor->getNome() << std::endl;
-            os_servidores << it_servidor->getDescricao() << std::endl;
-            os_servidores << it_servidor->getCodigoConvite() << std::endl;
+            ofs_servidores << it_servidor->getUsuarioDonoID() << std::endl;
+            ofs_servidores << it_servidor->getNome() << std::endl;
+            ofs_servidores << it_servidor->getDescricao() << std::endl;
+            ofs_servidores << it_servidor->getCodigoConvite() << std::endl;
 
             // Dados dos membros dos servidores
             std::vector <int> partIDs = it_servidor->getParticipantesIDs();
-            os_servidores << partIDs.size() << std::endl;
+            ofs_servidores << partIDs.size() << std::endl;
             for(auto it_p = partIDs.begin(); it_p != partIDs.end(); ++it_p)
-                os_servidores << *it_p << std::endl;
+                ofs_servidores << *it_p << std::endl;
 
             // Dados dos canais dos servidores
             std::vector <std::shared_ptr <Canal>> v_canais = it_servidor->getCanais();
-            os_servidores << v_canais.size() << std::endl;
+            ofs_servidores << v_canais.size() << std::endl;
             for(auto it_c = v_canais.begin(); it_c != v_canais.end(); ++it_c) {
-                os_servidores << (*it_c)->getID() << std::endl;
-                os_servidores << (*it_c)->getNome() << std::endl;
+                ofs_servidores << (*it_c)->getID() << std::endl;
+                ofs_servidores << (*it_c)->getNome() << std::endl;
                 if(std::dynamic_pointer_cast <CanalTexto> (*it_c))
-                    os_servidores << "TEXTO" << std::endl;
+                    ofs_servidores << "TEXTO" << std::endl;
                 if(std::dynamic_pointer_cast <CanalVoz> (*it_c))
-                    os_servidores << "VOZ" << std::endl;
+                    ofs_servidores << "VOZ" << std::endl;
 
                 // Dados das mensagens dos canais
-                std::vector<Mensagem> me = (*it_c)->listaMensagens();
-                os_servidores << me.size() << std::endl;
+                std::vector <Mensagem> me = (*it_c)->listaMensagens();
+                ofs_servidores << me.size() << std::endl;
                 for(auto it_m = me.begin(); it_m != me.end(); ++it_m) {
-                    os_servidores << it_m->getEnviadaPor() << std::endl;
-                    os_servidores << it_m->getDataHora() << std::endl;
-                    os_servidores << it_m->getConteudo() << std::endl;
+                    ofs_servidores << it_m->getEnviadaPor() << std::endl;
+                    ofs_servidores << it_m->getDataHora() << std::endl;
+                    ofs_servidores << it_m->getConteudo() << std::endl;
                 }
             }
         }
@@ -104,18 +105,159 @@ void Sistema::salvarServidores() const{
     }else
         std::cerr << "Erro ao salvar servidores!" << std::endl;
 
-    os_servidores.close();
+    ofs_servidores.close();
+}
+
+// Restaura todos os dados previamente cadastrados
+void Sistema::carregar(){
+    // Restaura usuários e servidores
+    carregarUsuarios();
+    carregarServidores();
+}
+
+// Restaura os dados de usuários previamente cadastrados
+void Sistema::carregarUsuarios(){
+
+    // Abre o arquivo a ser usado para ler os dados
+    std::ifstream ifs_usuarios("database/usuarios.txt");
+
+    // Verifica se a abertura do arquivo foi bem sucedida
+    if(ifs_usuarios){
+
+        // Verifica se o arquivo não está vazio
+        if(ifs_usuarios.peek() != std::ifstream::traits_type::eof()){
+
+            // Apaga todos os usuários para evitar repetição no salvamento
+            usuarios.clear();
+
+            // Variável para armazenar conteúdo das linhas do documento
+            std::string linha;
+
+            // Variáveis para armazenar os dados dos usuários
+            std::string qtd, id, nome, email, senha;
+
+            // Lê a quantidade de usuários cadastrados
+            getline(ifs_usuarios, qtd);
+
+            // Faz a leitura dos dados de cada usuário
+            for(int u = 0; u < stoi(qtd); ++u){
+                getline(ifs_usuarios, id);
+                getline(ifs_usuarios, nome);
+                getline(ifs_usuarios, email);
+                getline(ifs_usuarios, senha);
+
+                // Cria e cadastra o novo usuário no sistema
+                Usuario novo_usuario(stoi(id), email, senha, nome);
+                usuarios.push_back(novo_usuario);
+            }
+        }
+        
+    }else
+        std::cerr << "Nâo foi possível restaurar usuários!" << std::endl;
+}
+
+// Restaura os dados de servidores previamente cadastrados
+void Sistema::carregarServidores(){
+
+    // Abre o arquivo a ser usado para ler os dados
+    std::ifstream ifs_servidores("database/servidores.txt");
+
+    // Verifica se a abertura do arquivo foi bem sucedida
+    if(ifs_servidores){
+
+        // Verifica se o arquivo não está vazio
+        if(ifs_servidores.peek() != std::ifstream::traits_type::eof()){
+
+            // Apaga todos os servidores para evitar repetição no salvamento
+            servidores.clear();
+
+            // Variáveis para armazenar os dados dos servidores, canais e mensagens
+            std::string s_qtd, s_donoID, s_nome, s_desc, s_cod, s_numPart, s_partID;
+            std::string c_qtd, c_ID, c_nome, c_tipo;
+            std::string m_qtd, m_remID, m_dataHora, m_con;
+
+            // Lê a quantidade de usuários cadastrados
+            getline(ifs_servidores, s_qtd);
+
+            // Faz a leitura dos dados de cada servidor
+            for(int s = 0; s < stoi(s_qtd); ++s) {
+                getline(ifs_servidores, s_donoID);
+                getline(ifs_servidores, s_nome);
+                getline(ifs_servidores, s_desc);
+                getline(ifs_servidores, s_cod);
+                
+                // Cria e cadastra o novo servidor no sistema
+                Servidor novo_servidor(stoi(s_donoID), s_nome);
+                novo_servidor.setDescricao(s_desc);
+                novo_servidor.setCodigoConvite(s_cod);
+
+                // Lê o número de participantes do servidor
+                getline(ifs_servidores, s_numPart);
+
+                // Faz a leitura do ID de todos os participantes e os adiciona ao servidor
+                for(int p = 0; p < stoi(s_numPart); ++p){
+                    getline(ifs_servidores, s_partID);
+                    novo_servidor.adicionaParticipante(stoi(s_partID));
+                }
+
+                // Lê o número de canais do servidor
+                getline(ifs_servidores, c_qtd);
+
+                // Faz a leitura dos dados dos canais e insere no servidor
+                for(int c = 0; c < stoi(c_qtd); ++c) {
+                    getline(ifs_servidores, c_ID);
+                    getline(ifs_servidores, c_nome);
+                    getline(ifs_servidores, c_tipo);
+
+                    // Cria ponteiro inteligente de canal
+                    std::shared_ptr <Canal> novo_canal;
+
+                    // Instancia o canal de acordo com seu tipo
+                    if(c_tipo == "TEXTO")
+                        novo_canal = std::make_shared <CanalTexto> (stoi(c_ID), c_nome);
+                    else
+                        novo_canal = std::make_shared <CanalVoz> (stoi(c_ID), c_nome);
+
+                    // Lê a quantidade de mensagens do canal
+                    getline(ifs_servidores, m_qtd);
+
+                    // Faz a leitura dos dados das mensagens do canal
+                    for(int m = 0; m < stoi(m_qtd); ++m) {
+                        getline(ifs_servidores, m_remID);
+                        getline(ifs_servidores, m_dataHora);
+                        getline(ifs_servidores, m_con);
+
+                        // Cria e adiciona a mensagem ao canal
+                        Mensagem nova_mensagem(m_dataHora, stoi(m_remID), m_con);
+                        novo_canal->enviaMensagem(nova_mensagem);
+                    }
+
+                    novo_servidor.criaCanal(novo_canal);
+                }
+
+                servidores.push_back(novo_servidor);
+            }
+        }
+
+    } else
+        std::cerr << "Nâo foi possível restaurar usuários!" << std::endl;
 }
 
 // Função do comando "quit"
 std::string Sistema::quit(){
-    salvar();
+
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     return "Saindo do Concordo...";
 }
 
 // Função do comando "create-user"
 std::string Sistema::create_user(const std::string email, const std::string senha, const std::string nome){
     
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     // Verifica se o usuário inseriu todos os campos
     if(nome.empty())
         return "Informe todos os dados necessários do usuário!";
@@ -145,6 +287,9 @@ std::string Sistema::create_user(const std::string email, const std::string senh
 // Função do comando "login"
 std::string Sistema::login(const std::string email, const std::string senha){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+    
     // Procura algum usuário com o email e senha inseridos
     auto it_usuario = std::find_if(usuarios.begin(), usuarios.end(), [email, senha](Usuario usuario) {
         return usuario.getEmail() == email && usuario.getSenha() == senha;
@@ -171,6 +316,9 @@ std::string Sistema::login(const std::string email, const std::string senha){
 // Função do comando "disconnect"
 std::string Sistema::disconnect(){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     // Verifica algum usuário está logado
     if(usuarioLogadoId){
         
@@ -194,6 +342,9 @@ std::string Sistema::disconnect(){
 
 // Função do comando "create-server"
 std::string Sistema::create_server(const std::string nome){
+
+    // Restaura os dados de usuários e servidores
+    carregar();
 
     // Verifica se há algum usuário logado
     if(usuarioLogadoId){
@@ -234,6 +385,9 @@ std::string Sistema::create_server(const std::string nome){
 // Função do comando "set-server-desc"
 std::string Sistema::set_server_desc(const std::string nome, const std::string descricao){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
 
@@ -270,6 +424,9 @@ std::string Sistema::set_server_desc(const std::string nome, const std::string d
 
 // Função do comando "set-server-invite-code"
 std::string Sistema::set_server_invite_code(const std::string nome, const std::string codigo){
+
+    // Restaura os dados de usuários e servidores
+    carregar();
 
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
@@ -313,6 +470,9 @@ std::string Sistema::set_server_invite_code(const std::string nome, const std::s
 // Função do comando "list-servers"
 std::string Sistema::list_servers(){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
 
@@ -340,6 +500,9 @@ std::string Sistema::list_servers(){
 
 // Função do comando "remove-server"
 std::string Sistema::remove_server(const std::string nome){
+
+    // Restaura os dados de usuários e servidores
+    carregar();
     
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
@@ -380,6 +543,9 @@ std::string Sistema::remove_server(const std::string nome){
 
 // Função do comando "enter-server"
 std::string Sistema::enter_server(const std::string nome, const std::string codigo){
+
+    // Restaura os dados de usuários e servidores
+    carregar();
 
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
@@ -456,13 +622,15 @@ std::string Sistema::enter_server(const std::string nome, const std::string codi
 // Função do comando "leave-server"
 std::string Sistema::leave_server(){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     // Verifica se há algum usuário logado
     if(usuarioLogadoId){
 
         // Verifica se o usuário já não está conectado a nenhum servidor no momento
-        if(nomeServidorConectado.empty()){
+        if(nomeServidorConectado.empty())
             return "Você não está visualizando nenhum servidor!";
-        }
 
         // Variável para guardar a string de retorno da função
         std::string retorno = "Saindo do servidor \'" + nomeServidorConectado + "\'!";
@@ -481,13 +649,34 @@ std::string Sistema::leave_server(){
 
 // Função do comando "list-participants"
 std::string Sistema::list_participants(){
+
+    // Restaura os dados de usuários e servidores
+    carregar();
     
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
 
         // Verifica se o usuário não está conectado a nenhum servidor no momento
-        if(nomeServidorConectado.empty()){
+        if(nomeServidorConectado.empty())
             return "Não está conectado a nenhum servidor!";
+        else{
+            // Busca o servidor pelo nome
+            std::string nomeServ = nomeServidorConectado;
+            auto it_serv = std::find_if(servidores.begin(), servidores.end(), [nomeServ](Servidor servidor) {
+                return servidor.getNome() == nomeServ;
+            });
+
+            // Verifica se nenhum servidor com esse nome existe 
+            if(it_serv == servidores.end()){
+                                
+                // Desconecta o usuário do canal
+                idCanalConectado = 0;
+
+                // Desconecta o usuário do servidor
+                nomeServidorConectado = "";
+
+                return "Você não está visualizando nenhum servidor!";
+            }
         }
 
         // Variável que armazena o nome do servidor conectado no momento
@@ -521,12 +710,33 @@ std::string Sistema::list_participants(){
 // Função do comando "list-channels"
 std::string Sistema::list_channels(){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId) {
 
         // Verifica se o usuário está conectado a algum servidor
-        if(nomeServidorConectado.empty()) {
+        if(nomeServidorConectado.empty())
             return "Não está conectado a nenhum servidor!";
+        else{
+            // Busca o servidor pelo nome
+            std::string nomeServ = nomeServidorConectado;
+            auto it_serv = std::find_if(servidores.begin(), servidores.end(), [nomeServ](Servidor servidor) {
+                return servidor.getNome() == nomeServ;
+            });
+
+            // Verifica se nenhum servidor com esse nome existe 
+            if(it_serv == servidores.end()){
+                               
+                // Desconecta o usuário do canal
+                idCanalConectado = 0;
+
+                // Desconecta o usuário do servidor
+                nomeServidorConectado = "";
+
+                return "Você não está visualizando nenhum servidor!";
+            }
         }
 
         // Variável que armazena o nome do servidor conectado no momento
@@ -589,12 +799,33 @@ std::string Sistema::list_channels(){
 // Função do comando "create-channel"
 std::string Sistema::create_channel(const std::string nome, const std::string tipo){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
 
         // Verifica se o usuário está conectado a algum servidor
-        if(nomeServidorConectado.empty()) {
+        if(nomeServidorConectado.empty())
             return "Não está conectado a nenhum servidor!";
+        else{
+            // Busca o servidor pelo nome
+            std::string nomeServ = nomeServidorConectado;
+            auto it_serv = std::find_if(servidores.begin(), servidores.end(), [nomeServ](Servidor servidor) {
+                return servidor.getNome() == nomeServ;
+            });
+
+            // Verifica se nenhum servidor com esse nome existe 
+            if(it_serv == servidores.end()){
+                                
+                // Desconecta o usuário do canal
+                idCanalConectado = 0;
+
+                // Desconecta o usuário do servidor
+                nomeServidorConectado = "";
+
+                return "Você não está visualizando nenhum servidor!";
+            }
         }
 
         // Variável que armazena o nome do servidor conectado no momento
@@ -624,14 +855,16 @@ std::string Sistema::create_channel(const std::string nome, const std::string ti
                 return "Canal de texto \'" + nome + "\' já existe!";
             
             // Cria o canal de texto
-            std::shared_ptr <CanalTexto> novo_canal(new CanalTexto(it_servidor->qtdCanais() + 1, nome));
+            std::shared_ptr <Canal> novo_canal(new CanalTexto(it_servidor->qtdCanais() + 1, nome));
 
             // Verifica se a inserção foi realizada com sucesso
             if(it_servidor->criaCanal(novo_canal)){
+
                 // Salva os dados no arquivo
                 salvar();
 
                 return "Canal de texto \'" + nome + "\' criado!";
+
             }else
                 return "Erro inesperado ao criar canal de texto \'" + nome + "\'!";
         
@@ -650,14 +883,16 @@ std::string Sistema::create_channel(const std::string nome, const std::string ti
                 return "Canal de voz \'" + nome + "\' já existe!";
 
             // Cria o canal de voz
-            std::shared_ptr <CanalVoz> novo_canal(new CanalVoz(it_servidor->qtdCanais() + 1, nome));
+            std::shared_ptr <Canal> novo_canal(new CanalVoz(it_servidor->qtdCanais() + 1, nome));
 
             // Verifica se a inserção foi realizada com sucesso
             if(it_servidor->criaCanal(novo_canal)){
+
                 // Salva os dados no arquivo
                 salvar();
 
                 return "Canal de voz \'" + nome + "\' criado!";
+
             }else
                 return "Erro inesperado ao criar canal de voz \'" + nome + "\'!";
         }
@@ -669,12 +904,33 @@ std::string Sistema::create_channel(const std::string nome, const std::string ti
 // Função do comando "enter-channel"
 std::string Sistema::enter_channel(const std::string nome, const std::string tipo){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
 
         // Verifica se o usuário está conectado a algum servidor
-        if(nomeServidorConectado.empty()) {
+        if(nomeServidorConectado.empty())
             return "Não está conectado a nenhum servidor!";
+        else{
+            // Busca o servidor pelo nome
+            std::string nomeServ = nomeServidorConectado;
+            auto it_serv = std::find_if(servidores.begin(), servidores.end(), [nomeServ](Servidor servidor) {
+                return servidor.getNome() == nomeServ;
+            });
+
+            // Verifica se nenhum servidor com esse nome existe 
+            if(it_serv == servidores.end()){
+                                
+                // Desconecta o usuário do canal
+                idCanalConectado = 0;
+
+                // Desconecta o usuário do servidor
+                nomeServidorConectado = "";
+
+                return "Você não está visualizando nenhum servidor!";
+            }
         }
 
         // Variável que armazena o nome do servidor conectado no momento
@@ -736,12 +992,33 @@ std::string Sistema::enter_channel(const std::string nome, const std::string tip
 // Função do comando "leave-channel"
 std::string Sistema::leave_channel(){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+    
     // Verifica se há algum usuário logado
     if(usuarioLogadoId){
 
         // Verifica se o usuário está conectado a algum servidor
-        if(nomeServidorConectado.empty()){
+        if(nomeServidorConectado.empty())
             return "Não está conectado a nenhum servidor!";
+        else{
+            // Busca o servidor pelo nome
+            std::string nomeServ = nomeServidorConectado;
+            auto it_serv = std::find_if(servidores.begin(), servidores.end(), [nomeServ](Servidor servidor) {
+                return servidor.getNome() == nomeServ;
+            });
+
+            // Verifica se nenhum servidor com esse nome existe 
+            if(it_serv == servidores.end()){
+
+                // Desconecta o usuário do canal
+                idCanalConectado = 0;
+
+                // Desconecta o usuário do servidor
+                nomeServidorConectado = "";
+
+                return "Você não está visualizando nenhum servidor!";
+            }
         }
 
         // Verifica se o usuário já não está conectado a nenhum canal no momento
@@ -771,12 +1048,34 @@ std::string Sistema::leave_channel(){
 // Função do comando "send-message"
 std::string Sistema::send_message(const std::string mensagem){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     // Verifica se há algum usuário conectado
     if(usuarioLogadoId){
 
         // Verifica se o usuário está conectado a algum servidor
         if(nomeServidorConectado.empty())
             return "Não está conectado a nenhum servidor!";
+        else{
+            // Busca o servidor pelo nome
+            std::string nomeServ = nomeServidorConectado;
+            auto it_serv = std::find_if(servidores.begin(), servidores.end(), [nomeServ](Servidor servidor) {
+                return servidor.getNome() == nomeServ;
+            });
+
+            // Verifica se nenhum servidor com esse nome existe
+            if(it_serv == servidores.end()){
+
+                // Desconecta o usuário do canal
+                idCanalConectado = 0;
+
+                // Desconecta o usuário do servidor
+                nomeServidorConectado = "";
+
+                return "Você não está visualizando nenhum servidor!";
+            }
+        }
 
         // Verifica se o usuário está conectado a algum canal
         if(!idCanalConectado)
@@ -818,11 +1117,33 @@ std::string Sistema::send_message(const std::string mensagem){
 // Função do comando "list-messages"
 std::string Sistema::list_messages(){
 
+    // Restaura os dados de usuários e servidores
+    carregar();
+
     if(usuarioLogadoId){
 
         // Verifica se o usuário está conectado a algum servidor
         if(nomeServidorConectado.empty())
             return "Não está conectado a nenhum servidor!";
+        else{
+            // Busca o servidor pelo nome
+            std::string nomeServ = nomeServidorConectado;
+            auto it_serv = std::find_if(servidores.begin(), servidores.end(), [nomeServ](Servidor servidor) {
+                return servidor.getNome() == nomeServ;
+            });
+
+            // Verifica se nenhum servidor com esse nome existe 
+            if(it_serv == servidores.end()){
+                               
+                // Desconecta o usuário do canal
+                idCanalConectado = 0;
+
+                // Desconecta o usuário do servidor
+                nomeServidorConectado = "";
+
+                return "Você não está visualizando nenhum servidor!";
+            }
+        }
 
         // Verifica se o usuário está conectado a algum canal
         if(!idCanalConectado)
